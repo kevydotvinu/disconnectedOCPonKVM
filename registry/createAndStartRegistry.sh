@@ -81,6 +81,14 @@ cat << EOF > server.json
 }
 EOF
 	popd > /dev/null
+	wget --quiet https://github.com/cloudflare/cfssl/releases/download/v1.5.0/cfssljson_1.5.0_linux_amd64 -O ./cfssljson
+	wget --quiet https://github.com/cloudflare/cfssl/releases/download/v1.5.0/cfssl_1.5.0_linux_amd64 -O ./cfssl
+	chmod +x ./cfssl ./cfssljson
+	pushd $DIR/certs > /dev/null
+	../cfssl version ; ../cfssljson --version
+	../cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
+	../cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server server.json | cfssljson -bare server
+	popd > /dev/null
 }
 
 function RUN_REGISTRY {
