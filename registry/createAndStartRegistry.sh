@@ -98,8 +98,14 @@ function RUN_REGISTRY {
 		   docker.io/library/registry:2
 }
 
+function STOP_REGISTRY {
+	podman kill $(podman ps | grep registry | awk '{print $1}')
+	podman rm $(podman ps -a | grep registry | awk '{print $1}')
+}
+
 DIR=$(/bin/pwd)
 
 POPULATE_AUTH
 POPULATE_CERTS
+STOP_REGISTRY
 RUN_REGISTRY
