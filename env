@@ -1,0 +1,2 @@
+export CLUSTER_NAME=ocp
+export DOMAIN=example.local
