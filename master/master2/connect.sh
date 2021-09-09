@@ -5,8 +5,8 @@ function SSH_CONNECT {
 ssh -o StrictHostKeyChecking=no -i ${KEY} ${USER}@${IP}
 }
 
-source ../../env
-KEY=${BASE_DIR}/downloads/id_ed25519
+source $(dirname $(dirname $(pwd)))/env
+KEY=$(dirname $(dirname $(pwd)))/downloads/id_ed25519
 IP=192.168.122.93
 USER=core
 
