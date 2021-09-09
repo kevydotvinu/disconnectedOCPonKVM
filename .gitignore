@@ -1,2 +1,9 @@
 cluster-files/install-config.yaml
 cluster-files/install-config.yaml.bkp
+downloads/id_ed25519
+downloads/id_ed25519.pub
+downloads/oc
+downloads/openshift-install
+downloads/pull-secret
+downloads/rhcos.iso
+downloads/rootfs.img
