@@ -16,7 +16,7 @@ fi
 function DOWNLOAD_FILES {
 	# Download files and extract it
         wget -O rhcos.iso https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/$(echo $VERSION | cut -d. -f1-2)/$VERSION/rhcos-$VERSION-x86_64-live.x86_64.iso
-        wget -O rootfs.img https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/$(echo $VERSION | cut -d. -f1-2)/$VESION/rhcos-$VERSION-x86_64-live-rootfs.x86_64.img
+        wget -O rootfs.img https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/$(echo $VERSION | cut -d. -f1-2)/$VERSION/rhcos-$VERSION-x86_64-live-rootfs.x86_64.img
         wget -O openshift-client.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$VERSION/openshift-client-linux-$VERSION.tar.gz
         wget -O openshift-install.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$VERSION/openshift-install-linux-$VERSION.tar.gz
 

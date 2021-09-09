@@ -14,3 +14,4 @@ cluster-files/bootstrap.ign
 cluster-files/master.ign
 cluster-files/metadata.json
 cluster-files/worker.ign
+bootstrap/bootstrap.img
