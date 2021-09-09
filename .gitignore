@@ -7,3 +7,10 @@ downloads/openshift-install
 downloads/pull-secret
 downloads/rhcos.iso
 downloads/rootfs.img
+cluster-files/.openshift_install.log
+cluster-files/.openshift_install_state.json
+cluster-files/auth/
+cluster-files/bootstrap.ign
+cluster-files/master.ign
+cluster-files/metadata.json
+cluster-files/worker.ign
