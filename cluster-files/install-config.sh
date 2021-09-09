@@ -2,14 +2,14 @@
 # Populate install-config.yaml file using the ENV
 
 function SSH_CHECK {
-	if ! [[ -f ${BASE_DIR}/downloads/id_ed25519.pub ]]; then
+	if ! [[ -f $(dirname $(pwd))/downloads/id_ed25519.pub ]]; then
 		echo "SSH public key is not present in the downloads directory. Please run sshAndPullsecret.sh"
 		exit 1
 	fi
 }
 
 function PULL_SECRET_CHECK {
-	if ! [[ -f ${BASE_DIR}/downloads/pull-secret ]]; then
+	if ! [[ -f $(dirname $(pwd))/downloads/pull-secret ]]; then
 		echo "Pull secret is not present in the downloads directory. Please run sshAndPullsecret.sh"
 		exit 1
 	fi
@@ -48,8 +48,8 @@ cp install-config.yaml install-config.yaml.bkp
 SSH_CHECK
 PULL_SECRET_CHECK
 
-source ../env
-PULLSECRET=$(cat ${BASE_DIR}/downloads/pull-secret)
-SSHKEY=$(cat ${BASE_DIR}/downloads/id_ed25519.pub)
+source $(dirname $(pwd))/env
+PULLSECRET=$(cat $(dirname $(pwd))/downloads/pull-secret)
+SSHKEY=$(cat $(dirname $(pwd))/downloads/id_ed25519.pub)
 
 POPULATE_INSTALL_CONFIG
