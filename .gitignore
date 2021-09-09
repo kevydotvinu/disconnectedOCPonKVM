@@ -15,3 +15,6 @@ cluster-files/master.ign
 cluster-files/metadata.json
 cluster-files/worker.ign
 bootstrap/bootstrap.img
+master/master0/master0.img
+master/master1/master1.img
+master/master2/master2.img

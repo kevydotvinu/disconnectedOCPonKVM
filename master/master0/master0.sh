@@ -14,7 +14,7 @@ VIRT_NET=default
 VM_NAME=master0
 WEB_IP=192.168.122.1
 WEB_PORT=8080
-ISO=${BASE_DIR}/downloads/rhcos.iso
+ISO=$(dirname $(dirname $(pwd)))/downloads/rhcos.iso
 DISK=$(pwd)/${VM_NAME}.img
 virsh destroy ${VM_NAME} > /dev/null
 virsh undefine ${VM_NAME} > /dev/null
@@ -30,7 +30,7 @@ virt-install --name ${VM_NAME} \
 	     --extra-args "nomodeset rd.neednet=1 console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=vda coreos.live.rootfs_url=http://${WEB_IP}:${WEB_PORT}/downloads/rootfs.img coreos.inst.ignition_url=http://${WEB_IP}:${WEB_PORT}/cluster-files/master.ign"
 }
 
-source ../../env
+source $(dirname (dirname $(pwd)))/env
 
 CHECK_DISK
 CREATE_VM

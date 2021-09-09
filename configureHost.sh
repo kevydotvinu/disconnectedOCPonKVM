@@ -11,15 +11,24 @@ yum install -y screen podman httpd-tools jq git
 
 function CHECK_DIR {
 # Check and create required directory
-mkdir /ocp
+mkdir -p /ocp
 chmod +x -R /ocp
 }
 
 function CONFIGURE_DNS {
 	systemctl enable NetworkManager --now
+	rm -fv /etc/NetworkManager/conf.d/nm-dns.conf
 	echo -e "[main]\ndns=dnsmasq" > /etc/NetworkManager/conf.d/nm-dns.conf
+	rm -fv ${DNS_DIR}/${CLUSTER_NAME}.conf
 	echo "local=/${CLUSTER_NAME}.${DOMAIN}/" > ${DNS_DIR}/${CLUSTER_NAME}.conf
 	echo "address=/apps.${CLUSTER_NAME}.${BASE_DOM}/192.168.122.1" >> ${DNS_DIR}/${CLUSTER_NAME}.conf
+	sed -i '/192.168.122.90/d' /etc/hosts
+	sed -i '/192.168.122.91/d' /etc/hosts
+	sed -i '/192.168.122.92/d' /etc/hosts
+	sed -i '/192.168.122.93/d' /etc/hosts
+	sed -i '/192.168.122.94/d' /etc/hosts
+	sed -i '/192.168.122.95/d' /etc/hosts
+	sed -i '/192.168.122.1/d' /etc/hosts
 	echo "192.168.122.90 bootstrap.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.91 master0.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.92 master1.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
@@ -43,13 +52,22 @@ function CONFIGURE_DHCP {
 	MAC_MASTER2=$MAC:91:93
 	MAC_WORKER0=$MAC:91:94
 	MAC_WORKER1=$MAC:91:95
+	virsh net-destroy default
+	virsh net-start default
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_BOOTSTRAP}' name='bootstrap.ocp.example.local' ip='192.168.122.90'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_BOOTSTRAP}' name='bootstrap.ocp.example.local' ip='192.168.122.90'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER0}' name='master0.ocp.example.local' ip='192.168.122.91'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER0}' name='master0.ocp.example.local' ip='192.168.122.91'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER1}' name='master1.ocp.example.local' ip='192.168.122.92'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER1}' name='master1.ocp.example.local' ip='192.168.122.92'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER2}' name='master2.ocp.example.local' ip='192.168.122.93'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER2}' name='master2.ocp.example.local' ip='192.168.122.93'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.ocp.example.local' ip='192.168.122.94'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.ocp.example.local' ip='192.168.122.94'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.ocp.example.local' ip='192.168.122.95'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.ocp.example.local' ip='192.168.122.95'/>" --live --config
-	systemctl restart libvirtd
+	virsh net-destroy default
+	virsh net-start default
 }
 
 function CONFIGURE_FIREWALL {
@@ -61,13 +79,12 @@ function CONFIGURE_FIREWALL {
 	iptables -I INPUT 1 -p tcp -m tcp --dport 80 -s $CIDR -j ACCEPT
 }
 
-echo "export BASE_DIR=$(pwd)" >> env
 source $(pwd)/env
 DNS_DIR=/etc/NetworkManager/dnsmasq.d
 
-CHECK_PACKAGES
-CHECK_DIR
-CONFIGURE_DNS
-CONFIGURE_WEBSERVER
+#CHECK_PACKAGES
+#CHECK_DIR
+#CONFIGURE_DNS
+#CONFIGURE_WEBSERVER
 CONFIGURE_DHCP
-CONFIGURE_FIREWALL
+#CONFIGURE_FIREWALL
