@@ -22,7 +22,7 @@ baseDomain: ${DOMAIN}
 compute: 
 - hyperthreading: Enabled 
   name: worker
-  replicas: 0 
+  replicas: 2 
 controlPlane: 
   hyperthreading: Enabled 
   name: master

@@ -11,7 +11,7 @@ function START_HAPROXY {
 	      	--net host \
 	      	--volume "$(pwd)/haproxy.cfg:/etc/haproxy/haproxy.cfg" \
 	      	--security-opt label=disable \
-	      	--name haproxy localhost/kevydotvinu/haproxy
+	      	--name haproxy2 localhost/kevydotvinu/haproxy
 }
 
 CREATE_HAPROXY

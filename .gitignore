@@ -18,3 +18,6 @@ bootstrap/bootstrap.img
 master/master0/master0.img
 master/master1/master1.img
 master/master2/master2.img
+downloads/.openshift_install.log
+worker/worker0/worker0.img
+worker/worker1/worker1.img

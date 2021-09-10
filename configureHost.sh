@@ -21,7 +21,7 @@ function CONFIGURE_DNS {
 	echo -e "[main]\ndns=dnsmasq" > /etc/NetworkManager/conf.d/nm-dns.conf
 	rm -fv ${DNS_DIR}/${CLUSTER_NAME}.conf
 	echo "local=/${CLUSTER_NAME}.${DOMAIN}/" > ${DNS_DIR}/${CLUSTER_NAME}.conf
-	echo "address=/apps.${CLUSTER_NAME}.${BASE_DOM}/192.168.122.1" >> ${DNS_DIR}/${CLUSTER_NAME}.conf
+	echo "address=/.apps.${CLUSTER_NAME}.${DOMAIN}/192.168.122.1" >> ${DNS_DIR}/${CLUSTER_NAME}.conf
 	sed -i '/192.168.122.90/d' /etc/hosts
 	sed -i '/192.168.122.91/d' /etc/hosts
 	sed -i '/192.168.122.92/d' /etc/hosts

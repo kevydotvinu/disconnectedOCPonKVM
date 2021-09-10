@@ -18,8 +18,8 @@ ISO=$(dirname $(pwd))/downloads/rhcos.iso
 ROOTFS=http://${WEB_IP}:${WEB_PORT}/downloads/rootfs.img
 IGNITION=http://${WEB_IP}:${WEB_PORT}/cluster-files/bootstrap.ign
 DISK=$(pwd)/bootstrap.img
-virsh destroy ${VM_NAME} > /dev/null
-virsh undefine ${VM_NAME} > /dev/null
+virsh destroy ${VM_NAME} 2> /dev/null
+virsh undefine ${VM_NAME} 2> /dev/null
 virt-install --name ${VM_NAME} \
 	     --disk ${DISK} \
 	     --ram 16000 \
