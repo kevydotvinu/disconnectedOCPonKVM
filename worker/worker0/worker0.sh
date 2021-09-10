@@ -16,8 +16,8 @@ WEB_IP=192.168.122.1
 WEB_PORT=8080
 ISO=$(dirname $(dirname $(pwd)))/downloads/rhcos.iso
 DISK=$(pwd)/${VM_NAME}.img
-virsh destroy ${VM_NAME} > /dev/null
-virsh undefine ${VM_NAME} > /dev/null
+virsh destroy ${VM_NAME} 2> /dev/null
+virsh undefine ${VM_NAME} 2> /dev/null
 virt-install --name ${VM_NAME} \
 	     --disk ${DISK} \
 	     --ram 16000 \

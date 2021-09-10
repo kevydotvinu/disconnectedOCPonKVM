@@ -73,16 +73,16 @@ function CONFIGURE_DHCP {
 
 function CONFIGURE_FIREWALL {
 	CIDR=$(ip -4 a s $(virsh net-info default | awk '/Bridge:/{print $2}') | awk '/inet /{print $2}')
-	iptables -I INPUT 1 -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT 2> /dev/null
-	iptables -I INPUT 1 -p tcp -m tcp --dport 6443 -s $CIDR -j ACCEPT
+	iptables -I INPUT 1 -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 6443 -s $CIDR -j ACCEPT 2> /dev/null
-	iptables -I INPUT 1 -p tcp -m tcp --dport 22623 -s $CIDR -j ACCEPT
+	iptables -I INPUT 1 -p tcp -m tcp --dport 6443 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 22623 -s $CIDR -j ACCEPT 2> /dev/null
-	iptables -I INPUT 1 -p tcp -m tcp --dport 443 -s $CIDR -j ACCEPT
+	iptables -I INPUT 1 -p tcp -m tcp --dport 22623 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 443 -s $CIDR -j ACCEPT 2> /dev/null
-	iptables -I INPUT 1 -p tcp -m tcp --dport 80 -s $CIDR -j ACCEPT
+	iptables -I INPUT 1 -p tcp -m tcp --dport 443 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 80 -s $CIDR -j ACCEPT 2> /dev/null
+	iptables -I INPUT 1 -p tcp -m tcp --dport 80 -s $CIDR -j ACCEPT
 }
 
 source $(pwd)/env
@@ -93,4 +93,4 @@ DNS_DIR=/etc/NetworkManager/dnsmasq.d
 #CONFIGURE_DNS
 CONFIGURE_WEBSERVER
 #CONFIGURE_DHCP
-#CONFIGURE_FIREWALL
+CONFIGURE_FIREWALL
