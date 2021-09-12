@@ -28,6 +28,7 @@ function CONFIGURE_DNS {
 	sed -i '/192.168.122.93/d' /etc/hosts
 	sed -i '/192.168.122.94/d' /etc/hosts
 	sed -i '/192.168.122.95/d' /etc/hosts
+	sed -i '/192.168.122.96/d' /etc/hosts
 	sed -i '/192.168.122.1/d' /etc/hosts
 	echo "192.168.122.90 bootstrap.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.91 master0.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
@@ -35,6 +36,7 @@ function CONFIGURE_DNS {
 	echo "192.168.122.93 master2.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.94 worker0.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.95 worker1.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
+	echo "192.168.122.96 worker2.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.1 lb.${CLUSTER_NAME}.${DOMAIN}" "api.${CLUSTER_NAME}.${DOMAIN}" "api-int.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	systemctl reload NetworkManager
 	systemctl restart libvirtd

@@ -30,3 +30,6 @@ registry/cfssl
 registry/cfssljson
 registry/data/
 registry/dry-run.txt
+downloads/initramfs.img
+downloads/kernel
+worker/worker2/worker2.img

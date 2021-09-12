@@ -1,0 +1,51 @@
+#!ipxe
+
+set kernel http://192.168.122.1:8080/downloads/kernel
+set initrd http://192.168.122.1:8080/downloads/initramfs.img
+set image http://192.168.122.1:8080/downloads/rootfs.img
+
+:start
+menu OpenShift Container Platform
+item --gap --             ---------------------------- Cluster Installer --------------------------
+item Bootstrap0 Bootstrap-0
+item Master0 Master-0
+item Worker0 Worker-0
+item --gap --             --------------------------------- Options -------------------------------
+item exit Exit
+choose --timeout 20000 --default back target && goto ${target} || goto menu
+
+:Bootstrap0
+echo Booting Bootstrap-0
+set ignition http://192.168.1.2:8080/cl1/bootstrap.ign
+set ip ip=192.168.1.50::192.168.1.254:255.255.255.0:bootstrap-0.pnq.disconnected.cluster.redhatsupport:ens3:none
+set nameserver 192.168.1.2
+set device=sda
+kernel ${kernel} ip=${ip} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} coreos.inst.image_url=${image} coreos.inst.ignition_url=${ignition}
+initrd ${initrd}
+boot || imgfree
+goto start
+
+:Master0
+echo Booting Master-0
+set ignition http://192.168.1.2:8080/cl1/master.ign
+set ip ip=192.168.1.50::192.168.1.254:255.255.255.0:master-0.pnq.disconnected.cluster.redhatsupport:ens3:none
+set nameserver 192.168.1.2
+set device=sda
+kernel ${kernel} ip=${ip} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} coreos.inst.image_url=${image} coreos.inst.ignition_url=${ignition}
+initrd ${initrd}
+boot || imgfree
+goto start
+
+:Worker0
+echo Booting Woker-0
+set ignition http://192.168.122.1:8080/cluster-files/worker.ign
+set addr 192.168.122.96::192.168.122.1:255.255.255.0:worker2.ocp.example.local:ens2:none
+set nameserver 192.168.122.1
+set device /dev/vda
+kernel ${kernel} ip=${addr} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} initrd=main coreos.live.rootfs_url=${image} coreos.inst.ignition_url=${ignition}
+initrd --name main ${initrd}
+boot || imgfree
+goto start
+
+:exit
+exit
