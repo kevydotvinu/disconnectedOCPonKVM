@@ -21,3 +21,12 @@ master/master2/master2.img
 downloads/.openshift_install.log
 worker/worker0/worker0.img
 worker/worker1/worker1.img
+downloads/pull-secret.json
+registry/auth.json
+registry/auth/
+registry/cacert.pem
+registry/certs/
+registry/cfssl
+registry/cfssljson
+registry/data/
+registry/dry-run.txt

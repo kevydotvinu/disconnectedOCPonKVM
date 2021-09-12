@@ -9,7 +9,7 @@ function SSH_CHECK {
 }
 
 function PULL_SECRET_CHECK {
-	if ! [[ -f $(dirname $(pwd))/downloads/pull-secret ]]; then
+	if ! [[ -f $(dirname $(pwd))/downloads/pull-secret.json ]]; then
 		echo "Pull secret is not present in the downloads directory. Please run sshAndPullsecret.sh"
 		exit 1
 	fi
@@ -41,6 +41,10 @@ platform:
 fips: false 
 pullSecret: '${PULLSECRET}' 
 sshKey: '${SSHKEY}'
+$(sed -n '/imageContentSources:/,/^$/p' $(dirname $(pwd))/registry/dry-run.txt)
+additionalTrustBundle: |
+$(cat $(dirname $(pwd))/registry/certs/ca.pem | sed 's/^/    /')
+$(cat $(dirname $(pwd))/registry/certs/server.pem | sed 's/^/    /')
 EOF
 cp install-config.yaml install-config.yaml.bkp
 }
@@ -49,7 +53,7 @@ SSH_CHECK
 PULL_SECRET_CHECK
 
 source $(dirname $(pwd))/env
-PULLSECRET=$(cat $(dirname $(pwd))/downloads/pull-secret)
+PULLSECRET=$(cat $(dirname $(pwd))/downloads/pull-secret.json)
 SSHKEY=$(cat $(dirname $(pwd))/downloads/id_ed25519.pub)
 
 POPULATE_INSTALL_CONFIG

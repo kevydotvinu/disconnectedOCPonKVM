@@ -1,2 +1,5 @@
+export RELEASE=4.9.0-rc.0
 export CLUSTER_NAME=ocp
 export DOMAIN=example.local
+export PATH=$PATH:$(pwd)/downloads
+export KUBECONFIG=$(pwd)/cluster-files/auth/kubeconfig
