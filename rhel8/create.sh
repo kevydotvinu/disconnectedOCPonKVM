@@ -15,7 +15,7 @@
 
 function IMAGE_CHECK {
 # Take one argument from the commandline: VM name
-if ! [[ -f $DIR/*.qcow2 ]]; then
+if ! [[ -f $DIR/rhel8.qcow2 ]]; then
     echo "No image present"
     echo "Download from 'https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.9/x86_64/product-software' and save it here as rhel7.qcow2"
     exit 1
@@ -100,6 +100,8 @@ users:
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
     groups: sudo
     shell: /bin/bash
+    ssh_authorized_keys:
+      - $SSH_PUBLIC_KEY
 ssh_pwauth: True
 
 # configure interaction with ssh server
@@ -129,11 +131,11 @@ echo
 echo -e "[\e[36mINFO\e[m] Installing with the following parameters:"
 echo "virt-install --import --name $NAME --ram $MEM --vcpus $CPUS --disk
 $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network
-bridge=$BRIDGE,model=virtio,mac=$MAC --os-type=linux --os-variant=rhel6 --noautoconsole"
+$NETWORK,model=virtio,mac=$MAC --os-type=linux --os-variant=rhel6 --noautoconsole"
 
 virt-install --import --name $NAME --ram $MEM --vcpus $CPUS --disk \
 $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
-bridge=$BRIDGE,model=virtio,mac=$MAC --os-type=linux --os-variant=rhel6 --noautoconsole
+$NETWORK,model=virtio,mac=$MAC --os-type=linux --os-variant=rhel6 --noautoconsole
 
 echo "Please wait while we retrive your IP"
 MAC=$(virsh dumpxml $NAME | awk -F\' '/mac address/ {print $2}')
@@ -167,8 +169,10 @@ NAME=$1
 DIR=$(/bin/pwd)
 MEM=1024
 CPUS=1
-BRIDGE=virbr0
-MAC=52:54:00:2e:1c:00
+# NETWORK='bridge=virbr0'
+NETWORK='network=default'
+MAC=$(ip a s $(virsh net-info default | awk '/Bridge:/{print $2}') | awk '/ether /{print $2}' | cut -f1-4 -d':')
+MAC=$MAC:91:97
 # Cloud init files
 USER_DATA=user-data
 META_DATA=meta-data
@@ -176,9 +180,9 @@ CI_ISO=$NAME-cidata.iso
 DISK=OS.qcow2
 DISK_DATA=DATA.qcow2
 SSH_CHECK
-SSH_PUBLIC_KEY="$(cat ../downloads/id_ed25519.pub)"
+SSH_PUBLIC_KEY="$(cat $(dirname $(pwd))/downloads/id_ed25519.pub)"
 IMAGE_CHECK
-IMAGE=$DIR/rhel7.qcow2
+IMAGE=$DIR/rhel8.qcow2
 USERNAME=user
 
 ARG_CHECK

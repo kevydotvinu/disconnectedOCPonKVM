@@ -1,0 +1,8 @@
+[all:vars]
+ansible_user=user
+ansible_become=True 
+
+openshift_kubeconfig_path="~/.kube/config" 
+
+[new_workers] 
+192.168.122.198
