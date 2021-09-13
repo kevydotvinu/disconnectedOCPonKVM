@@ -3,11 +3,11 @@
 
 ### Why
 → Useful for reproducing support case scenario
-→ In some cases Quicklab cluster + RHEV will not be enough
-→ We can accomadate disconnected + more cluster scenario
+→ In some cases Quicklab cluster and RHEV infra will not be enough for complex scenario replication
+→ We can accomadate disconnected + more cluster scenario like proxy, pxe, etc
 → Useful for Hackathon
-→ It is bash and tweaks can be done
-→ RHCOS serial console access
+→ It is simple bash so tweaks can be done
+→ RHCOS serial console access + BIOS in terminal
 
 #### Architecture
 ┌───────────────────────────────────────────────────────────────────────────────────┐
@@ -27,13 +27,13 @@
 │   │  │ Bootstrap │  Master01 │  Master02 │  Master03 │  Worker01 │  Worker02  │   │  --> Web server
 │   │  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘  │   │  --> Registry
 │   │                                                                    RHEL KVM   │  --> Proxy
-│   └───────────────────────────────────────────────────────────────────────────┘   │
+│   └───────────────────────────────────────────────────────────────────────────┘   │  --> PXE
 │                                                                                RHEV  RHVH
 └───────────────────────────────────────────────────────────────────────────────────┘  --> Pass-Through Host CPU
 
 #### Needs
 → A virtual machine with pass-through host CPU enabled. The host resources must meet:
-   RAM:  80 GB
+   RAM:  120 GB
    CPU:  20
    DISK: 360 GB
 
@@ -44,10 +44,11 @@
 
 #### How
 → Get script
-   $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM.git
+   $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM
 
 → Configure host
    $ bash configureHost.sh
    $ cd downloads && bash downloadFiles.sh '<VERSION>' && bash sshAndPullsecret.sh '<ACCESS_TOKEN>'
+   $ cd ../registry && bash createRegistry.sh & startRegistry.sh
    $ cd ../cluster-files && bash install-config.sh && bash createManifestsAndIgnitionConfig.sh
    $ cd ../bootstrap && bash bootstrap.sh

@@ -7,42 +7,39 @@ set image http://192.168.122.1:8080/downloads/rootfs.img
 :start
 menu OpenShift Container Platform
 item --gap --             ---------------------------- Cluster Installer --------------------------
-item Bootstrap0 Bootstrap-0
-item Master0 Master-0
-item Worker0 Worker-0
+item Bootstrap0 Bootstrap(blank)
+item Master0 Master-0(No entry)
+item Master1 Master-1(No entry)
+item Master2 Master-2(No entry)
+item Worker1 Worker-1(No entry)
+item Worker2 Worker-2
 item --gap --             --------------------------------- Options -------------------------------
 item exit Exit
 choose --timeout 20000 --default back target && goto ${target} || goto menu
 
 :Bootstrap0
-echo Booting Bootstrap-0
-set ignition http://192.168.1.2:8080/cl1/bootstrap.ign
-set ip ip=192.168.1.50::192.168.1.254:255.255.255.0:bootstrap-0.pnq.disconnected.cluster.redhatsupport:ens3:none
-set nameserver 192.168.1.2
-set device=sda
-kernel ${kernel} ip=${ip} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} coreos.inst.image_url=${image} coreos.inst.ignition_url=${ignition}
-initrd ${initrd}
-boot || imgfree
-goto start
+echo No entry!
 
 :Master0
-echo Booting Master-0
-set ignition http://192.168.1.2:8080/cl1/master.ign
-set ip ip=192.168.1.50::192.168.1.254:255.255.255.0:master-0.pnq.disconnected.cluster.redhatsupport:ens3:none
-set nameserver 192.168.1.2
-set device=sda
-kernel ${kernel} ip=${ip} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} coreos.inst.image_url=${image} coreos.inst.ignition_url=${ignition}
-initrd ${initrd}
-boot || imgfree
-goto start
+echo No entry!
 
-:Worker0
-echo Booting Woker-0
+:Master1
+echo No entry!
+
+:Master2
+echo No entry!
+
+:Worker1
+echo No entry!
+
+:Worker2
+echo Installing worker2 node...
 set ignition http://192.168.122.1:8080/cluster-files/worker.ign
-set addr 192.168.122.96::192.168.122.1:255.255.255.0:worker2.ocp.example.local:ens2:none
+set bond bond0:ens2,ens3:mode=active-backup
+set addr 192.168.122.96::192.168.122.1:255.255.255.0:worker2:bond0:none
 set nameserver 192.168.122.1
 set device /dev/vda
-kernel ${kernel} ip=${addr} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} initrd=main coreos.live.rootfs_url=${image} coreos.inst.ignition_url=${ignition}
+kernel ${kernel} bond=${bond} ip=${addr} nameserver=${nameserver} rd.neednet=1 initrd=${initrd} console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=${device} initrd=main coreos.live.rootfs_url=${image} coreos.inst.ignition_url=${ignition}
 initrd --name main ${initrd}
 boot || imgfree
 goto start

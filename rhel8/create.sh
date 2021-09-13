@@ -172,7 +172,7 @@ CPUS=1
 # NETWORK='bridge=virbr0'
 NETWORK='network=default'
 MAC=$(ip a s $(virsh net-info default | awk '/Bridge:/{print $2}') | awk '/ether /{print $2}' | cut -f1-4 -d':')
-MAC=$MAC:91:97
+MAC=$MAC:91:98
 # Cloud init files
 USER_DATA=user-data
 META_DATA=meta-data
