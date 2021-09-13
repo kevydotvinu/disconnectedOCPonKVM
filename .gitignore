@@ -35,3 +35,4 @@ downloads/kernel
 worker/worker2/worker2.img
 rhel8/rhel8.qcow2
 rhel8/rhel8/
+rhel8/hosts
