@@ -7,33 +7,33 @@ set image http://192.168.122.1:8080/downloads/rootfs.img
 :start
 menu OpenShift Container Platform
 item --gap --             ---------------------------- Cluster Installer --------------------------
-item Bootstrap0 Bootstrap(blank)
-item Master0 Master-0(No entry)
-item Master1 Master-1(No entry)
-item Master2 Master-2(No entry)
-item Worker1 Worker-1(No entry)
-item Worker2 Worker-2
+item 1 Bootstrap (No entry)
+item 2 Master-00 (No entry)
+item 3 Master-01 (No entry)
+item 4 Master-02 (No entry)
+item 5 Worker-01 (No entry)
+item 6 Worker-02
 item --gap --             --------------------------------- Options -------------------------------
 item exit Exit
 choose --timeout 20000 --default back target && goto ${target} || goto menu
 
-:Bootstrap0
+:1
 echo No entry!
 
-:Master0
+:2
 echo No entry!
 
-:Master1
+:3
 echo No entry!
 
-:Master2
+:4
 echo No entry!
 
-:Worker1
+:5
 echo No entry!
 
-:Worker2
-echo Installing worker2 node...
+:6
+echo Installing Worker-02 node...
 set ignition http://192.168.122.1:8080/cluster-files/worker.ign
 set bond bond0:ens2,ens3:mode=active-backup
 set addr 192.168.122.96::192.168.122.1:255.255.255.0:worker2:bond0:none
