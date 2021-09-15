@@ -6,22 +6,16 @@ function CHECK_PACKAGES {
 subscription-manager register
 subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-ose-4.7-rpms
 yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
-yum install -y screen podman httpd-tools jq git
-}
-
-function CHECK_DIR {
-# Check and create required directory
-mkdir -p /ocp
-chmod +x -R /ocp
+yum install -y screen podman httpd-tools jq git openshift-ansible
 }
 
 function CONFIGURE_DNS {
 	systemctl enable NetworkManager --now
 	rm -fv /etc/NetworkManager/conf.d/nm-dns.conf
 	echo -e "[main]\ndns=dnsmasq" > /etc/NetworkManager/conf.d/nm-dns.conf
-	rm -fv ${DNS_DIR}/${CLUSTER_NAME}.conf
-	echo "local=/${CLUSTER_NAME}.${DOMAIN}/" > ${DNS_DIR}/${CLUSTER_NAME}.conf
-	echo "address=/.apps.${CLUSTER_NAME}.${DOMAIN}/192.168.122.1" >> ${DNS_DIR}/${CLUSTER_NAME}.conf
+	rm -fv /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
+	echo "local=/${CLUSTER_NAME}.${DOMAIN}/" > /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
+	echo "address=/.apps.${CLUSTER_NAME}.${DOMAIN}/192.168.122.1" >> /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
 	sed -i '/192.168.122.90/d' /etc/hosts
 	sed -i '/192.168.122.91/d' /etc/hosts
 	sed -i '/192.168.122.92/d' /etc/hosts
@@ -89,6 +83,10 @@ function CONFIGURE_FIREWALL {
 	ALL=0.0.0.0/0
 	iptables -D INPUT -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT
+	iptables -D INPUT -p tcp -m tcp --dport 3128 -s $CIDR -j ACCEPT 2> /dev/null
+	iptables -I INPUT 1 -p tcp -m tcp --dport 3128 -s $CIDR -j ACCEPT
+	iptables -D INPUT -p tcp -m tcp --dport 5000 -s $CIDR -j ACCEPT 2> /dev/null
+	iptables -I INPUT 1 -p tcp -m tcp --dport 5000 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 6443 -s $ALL -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 6443 -s $ALL -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 22623 -s $CIDR -j ACCEPT 2> /dev/null
@@ -97,16 +95,13 @@ function CONFIGURE_FIREWALL {
 	iptables -I INPUT 1 -p tcp -m tcp --dport 443 -s $ALL -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 80 -s $ALL -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 80 -s $ALL -j ACCEPT
-	iptables -D FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT 2> /dev/null
 	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 2> /dev/null
 	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p tcp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
 }
 
 source $(pwd)/env
-DNS_DIR=/etc/NetworkManager/dnsmasq.d
 
 #CHECK_PACKAGES
-#CHECK_DIR
 #CONFIGURE_DNS
 CONFIGURE_WEBSERVER
 #CONFIGURE_DHCP
