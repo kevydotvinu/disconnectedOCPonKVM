@@ -63,8 +63,49 @@ $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && cd disconnectOC
 #### Configure host
 ```
 $ bash configureHost.sh
+```
+#### Download and prepare files
+```
 $ cd downloads && bash downloadFiles.sh '<VERSION>' && bash sshAndPullsecret.sh '<ACCESS_TOKEN>'
+```
+#### Create cluster
+##### Disconnected + non-proxy
+```
 $ cd ../registry && bash createRegistry.sh && bash startRegistry.sh
-$ cd ../cluster-files && bash install-config.sh && bash createManifestsAndIgnitionConfig.sh
+$ cd ../cluster-files && bash install-config.sh -t disconnected -i non-proxy && bash createManifestsAndIgnitionConfig.sh
+```
+##### Connected + proxy
+```
+$ cd ../proxy && bash creatSquid.sh && startSquid.sh
+$ cd ../cluster-files && bash install-config.sh -t connected -i proxy && bash createManifestsAndIgnitionConfig.sh
+```
+##### Connected + non-proxy
+```
+$ cd ../cluster-files && bash install-config.sh -t connected -i non-proxy && bash createManifestsAndIgnitionConfig.sh
+```
+#### Create bootstrap node
+```
 $ cd ../bootstrap && bash bootstrap.sh
+```
+#### Create master node
+```
+$ cd ../master/master0 && bash master.sh
+$ cd ../master/master1 && bash master.sh
+$ cd ../master/master2 && bash master.sh
+```
+#### Create worker node
+```
+$ cd ../worker/worker0 && bash worker.sh
+$ cd ../worker/worker1 && bash worker.sh
+```
+##### Create worker node from PXE server with NIC bonding
+```
+$ cd ../../pxe && bash createPXE.sh && bash startPXE.sh
+$ cd ../worker/worker2 && bash worker.sh
+```
+##### Create and add RHEL8 worker node to the cluster
+```
+$ cd ../rhel8 && bash create rhel8
+$ bash hosts.sh && ansible-playbook -i hosts /usr/share/ansible/openshift-ansible/playbooks/scaleup.yml
+$ bash approve.sh
 ```
