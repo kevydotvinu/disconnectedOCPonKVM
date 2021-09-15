@@ -83,27 +83,28 @@ $ cd ../cluster-files && bash install-config.sh -t connected -i proxy && bash cr
 ```
 $ cd ../cluster-files && bash install-config.sh -t connected -i non-proxy && bash createManifestsAndIgnitionConfig.sh
 ```
-#### Create bootstrap node
+#### Create nodes
+##### Bootstrap node
 ```
 $ cd ../bootstrap && bash bootstrap.sh
 ```
-#### Create master node
+##### Master node
 ```
 $ cd ../master/master0 && bash master.sh
 $ cd ../master/master1 && bash master.sh
 $ cd ../master/master2 && bash master.sh
 ```
-#### Create worker node
+##### Worker node
 ```
 $ cd ../worker/worker0 && bash worker.sh
 $ cd ../worker/worker1 && bash worker.sh
 ```
-##### Create worker node from PXE server with NIC bonding
+###### Create worker node from PXE server with NIC bonding
 ```
 $ cd ../../pxe && bash createPXE.sh && bash startPXE.sh
 $ cd ../worker/worker2 && bash worker.sh
 ```
-##### Create and add RHEL8 worker node to the cluster
+###### Create and add RHEL8 worker node to the cluster
 ```
 $ cd ../rhel8 && bash create rhel8
 $ bash hosts.sh && ansible-playbook -i hosts /usr/share/ansible/openshift-ansible/playbooks/scaleup.yml
