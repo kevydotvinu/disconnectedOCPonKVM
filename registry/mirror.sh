@@ -1,5 +1,5 @@
 source $(dirname $(pwd))/env
-OCP_RELEASE=$RELEASE
+OCP_RELEASE=${RELEASE}
 LOCAL_REGISTRY='192.168.122.1:5000'
 LOCAL_REPOSITORY='ocp4/openshift4'
 PRODUCT_REPO='openshift-release-dev'

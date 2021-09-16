@@ -82,9 +82,9 @@ fips: false
 pullSecret: '${PULLSECRET}' 
 sshKey: '${SSHKEY}'
 proxy:
-  httpProxy: http://192.168.122.1:31128
-  httpsProxy: https://192.168.122.1:31128
-  noProxy: example.local
+  httpProxy: http://192.168.122.1:3128 
+  httpsProxy: http://192.168.122.1:3128 
+  noProxy: example.local,192.168.122.0/24 
 EOF
 cp install-config.yaml install-config.yaml.bkp
 }
@@ -119,8 +119,72 @@ EOF
 cp install-config.yaml install-config.yaml.bkp
 }
 
+function SNC_PROXY {
+cat << EOF > install-config.yaml
+apiVersion: v1
+baseDomain: ${DOMAIN}
+compute: 
+- hyperthreading: Enabled 
+  name: worker
+  replicas: 0 
+controlPlane: 
+  hyperthreading: Enabled 
+  name: master
+  replicas: 1 
+metadata:
+  name: ${CLUSTER_NAME}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14 
+    hostPrefix: 23 
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - 172.30.0.0/16
+platform:
+  none: {} 
+fips: false 
+pullSecret: '${PULLSECRET}' 
+sshKey: '${SSHKEY}'
+proxy:
+  httpProxy: http://192.168.122.1:3128 
+  httpsProxy: http://192.168.122.1:3128 
+  noProxy: example.local,192.168.122.0/24 
+EOF
+cp install-config.yaml install-config.yaml.bkp
+}
+
+function SNC_NON_PROXY {
+cat << EOF > install-config.yaml
+apiVersion: v1
+baseDomain: ${DOMAIN}
+compute: 
+- hyperthreading: Enabled 
+  name: worker
+  replicas: 0 
+controlPlane: 
+  hyperthreading: Enabled 
+  name: master
+  replicas: 1 
+metadata:
+  name: ${CLUSTER_NAME}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14 
+    hostPrefix: 23 
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - 172.30.0.0/16
+platform:
+  none: {} 
+fips: false 
+pullSecret: '${PULLSECRET}' 
+sshKey: '${SSHKEY}'
+EOF
+cp install-config.yaml install-config.yaml.bkp
+}
+
 function USAGE {
-	echo "Usage: bash $0 -t <connnected|disconnected> -i <proxy|non-proxy>" 1>&2; exit 1;
+	echo "Usage: bash $0 -t <connnected|disconnected|singlenode> -i <proxy|non-proxy>" 1>&2; exit 1;
 }
 
 function VALIDATE {
@@ -140,7 +204,7 @@ while getopts ":t:i:" o; do
 		    elif [[ "${i}" == "non-proxy" ]]; then
                             SSH_CHECK
                             PULL_SECRET_CHECK
-			    DISCONNECTED
+			    DISCONNECTED && echo "✔ Completed"
 		    else
 			    USAGE
 		    fi
@@ -148,11 +212,27 @@ while getopts ":t:i:" o; do
 		    if [[ "${i}" == "proxy" ]]; then
                             SSH_CHECK
                             PULL_SECRET_CHECK
-			    CONNECTED_PROXY
+			    CONNECTED_PROXY && echo "✔ Completed"
 		    elif [[ "${i}" == "non-proxy" ]]; then
                             SSH_CHECK
                             PULL_SECRET_CHECK
-			    CONNECTED_NON_PROXY
+			    CONNECTED_NON_PROXY && echo "✔ Completed"
+                            echo "⚠ Please enable MASQUERADE"
+                            echo "❱ iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE"
+		    else 
+			    USAGE
+		    fi
+            elif [[ "${t}" == "singlenode" ]]; then
+		    if [[ "${i}" == "proxy" ]]; then
+                            SSH_CHECK
+                            PULL_SECRET_CHECK
+			    SNC_PROXY && echo "✔ Completed"
+		    elif [[ "${i}" == "non-proxy" ]]; then
+                            SSH_CHECK
+                            PULL_SECRET_CHECK
+			    SNC_NON_PROXY && echo "✔ Completed"
+                            echo "⚠ Please enable MASQUERADE"
+                            echo "❱ iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE"
 		    else 
 			    USAGE
 		    fi

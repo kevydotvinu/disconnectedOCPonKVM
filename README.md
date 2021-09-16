@@ -46,9 +46,9 @@
 #### Needs
 
 * A virtual machine with pass-through host CPU enabled. The host resources must meet:
-  * RAM:  120 GB
-   * CPU:  20
-   * DISK: 360 GB
+   * RAM: **120 GB**
+   * CPU: **30**
+   * DISK: **360 GB**
 
 * Example Pass-Through Host CPU configuration in RHV.
 
@@ -57,7 +57,8 @@
 
 #### Get script
 ```
-$ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && cd disconnectOCPonKVM
+$ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && \
+  cd disconnectOCPonKVM
 ```
 
 #### Configure host
@@ -66,47 +67,91 @@ $ bash configureHost.sh
 ```
 #### Download and prepare files
 ```
-$ cd downloads && bash downloadFiles.sh '<VERSION>' && bash sshAndPullsecret.sh '<ACCESS_TOKEN>'
+$ sed -i 's/RELEASE=.*/RELEASE=4.8.2/' env
+$ cd downloads && \
+  bash downloadFiles.sh '<VERSION>' && \
+  bash sshAndPullsecret.sh '<ACCESS_TOKEN>'
 ```
 #### Create cluster
 ##### Disconnected + non-proxy
 ```
-$ cd ../registry && bash createRegistry.sh && bash startRegistry.sh
-$ cd ../cluster-files && bash install-config.sh -t disconnected -i non-proxy && bash createManifestsAndIgnitionConfig.sh
+$ cd ../registry && \
+  bash createRegistry.sh && \
+  bash startRegistry.sh
+$ cd ../cluster-files && \
+  bash install-config.sh -t disconnected -i non-proxy && \
+  bash createManifestsAndIgnitionConfig.sh
 ```
 ##### Connected + proxy
 ```
-$ cd ../proxy && bash creatSquid.sh && startSquid.sh
-$ cd ../cluster-files && bash install-config.sh -t connected -i proxy && bash createManifestsAndIgnitionConfig.sh
+$ cd ../proxy && \
+  bash creatSquid.sh && \
+  bash startSquid.sh
+$ cd ../cluster-files && \
+  bash install-config.sh -t connected -i proxy && \
+  bash createManifestsAndIgnitionConfig.sh
 ```
 ##### Connected + non-proxy
 ```
-$ cd ../cluster-files && bash install-config.sh -t connected -i non-proxy && bash createManifestsAndIgnitionConfig.sh
+$ cd ../cluster-files && \
+  bash install-config.sh -t connected -i non-proxy && \
+  bash createManifestsAndIgnitionConfig.sh
+```
+#### Single node + proxy
+```
+$ cd ../cluster-files && \
+  bash install-config.sh -t singlenode -i proxy && \
+  bash createManifestsAndIgnitionConfig.sh
+```
+##### Operators adjustment for single node deployment (Run after the control plane is up)
+```
+$ bash sncPatch.sh
+```
+#### Single node + non-proxy
+```
+$ cd ../cluster-files && \
+  bash install-config.sh -t singlenode -i non-proxy && \
+  bash createManifestsAndIgnitionConfig.sh
+```
+##### Operators adjustment for single node deployment (Run after the control plane is up)
+```
+$ bash sncPatch.sh
 ```
 #### Create nodes
 ##### Bootstrap node
 ```
-$ cd ../bootstrap && bash bootstrap.sh
+$ cd ../bootstrap && \
+  bash bootstrap.sh
 ```
 ##### Master node
 ```
-$ cd ../master/master0 && bash master.sh
-$ cd ../master/master1 && bash master.sh
-$ cd ../master/master2 && bash master.sh
+$ cd ../master/master0 && \
+  bash master.sh
+$ cd ../master/master1 && \
+  bash master.sh
+$ cd ../master/master2 && \
+  bash master.sh
 ```
 ##### Worker node
 ```
-$ cd ../worker/worker0 && bash worker.sh
-$ cd ../worker/worker1 && bash worker.sh
+$ cd ../worker/worker0 && \
+  bash worker.sh
+$ cd ../worker/worker1 && \
+  bash worker.sh
 ```
 ###### Create worker node from PXE server with NIC bonding
 ```
-$ cd ../../pxe && bash createPXE.sh && bash startPXE.sh
-$ cd ../worker/worker2 && bash worker.sh
+$ cd ../../pxe && \
+  bash createPXE.sh && \
+  bash startPXE.sh
+$ cd ../worker/worker2 && \
+  bash worker.sh
 ```
 ###### Create and add RHEL8 worker node to the cluster
 ```
-$ cd ../rhel8 && bash create rhel8
-$ bash hosts.sh && ansible-playbook -i hosts /usr/share/ansible/openshift-ansible/playbooks/scaleup.yml
+$ cd ../rhel8 && \
+  bash create rhel8
+$ bash hosts.sh && \
+  ansible-playbook -i hosts /usr/share/ansible/openshift-ansible/playbooks/scaleup.yml
 $ bash approve.sh
 ```

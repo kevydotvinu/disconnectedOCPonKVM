@@ -36,3 +36,7 @@ worker/worker2/worker2.img
 rhel8/rhel8.qcow2
 rhel8/rhel8/
 rhel8/hosts
+downloads/openshift-client.tar.gz
+downloads/openshift-install.tar.gz
+snc/bootstrap.img
+snc/master0.img
