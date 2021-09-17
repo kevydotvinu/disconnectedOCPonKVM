@@ -31,14 +31,6 @@
 * Serial console can be accessible from terminal - Good for network related scenarios
 * Boot menu can be accessible from terminal - No need to relay on GUI console which usually opens just after the max time to hit the TAB or 'e'.
 
-#### Cluster access ( Web + CLI ) is also easy.
-* That can be achieved by simple adding the below entries in the client machine's `/etc/hosts` file
-```
-<kvm-host-ip> api.ocp.example.local
-<kvm-host-ip> oauth-openshift.apps.ocp.example.local
-<kvm-host-ip> console-openshift-console.apps.ocp.example.local
-```
-
 ### How
 #### Architecture
 ![enter image description here](https://raw.githubusercontent.com/kevydotvinu/disconnectedOCPonKVM/main/.img/architecture.png)
@@ -69,7 +61,7 @@ $ bash configureHost.sh
 ```
 $ sed -i 's/RELEASE=.*/RELEASE=4.8.2/' env
 $ cd downloads && \
-  bash downloadFiles.sh '<VERSION>' && \
+  bash downloadFiles.sh && \
   bash sshAndPullsecret.sh '<ACCESS_TOKEN>'
 ```
 #### Create cluster
@@ -273,3 +265,11 @@ $ jq -c --argjson var "$(jq .passwd.users passwd.ign)" '.passwd.users += $var' b
 $ jq -c --argjson var "$(jq .storage.files passwd.ign)" '.storage.files += $var' bootstrap.ign.1 > bootstrap.ign
 $ rm -vf bootstrap.ign.1
 ```
+##### Cluster access from output of the KVM host
+Add the below entries in the machine where the cluster does access.
+```
+<kvm-host-ip> api.ocp.example.local
+<kvm-host-ip> oauth-openshift.apps.ocp.example.local
+<kvm-host-ip> console-openshift-console.apps.ocp.example.local
+```
+
