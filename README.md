@@ -155,3 +155,121 @@ $ bash hosts.sh && \
   ansible-playbook -i hosts /usr/share/ansible/openshift-ansible/playbooks/scaleup.yml
 $ bash approve.sh
 ```
+#### Tips and Tricks
+##### Directory structure
+```
+.
+├── bootstrap
+│   ├── bootstrap.sh
+│   └── connect.sh
+├── cluster-files
+│   ├── connect.sh
+│   ├── createManifestsAndIgnitionConfig.sh
+│   └── install-config.sh
+├── configureHost.sh
+├── downloads
+│   ├── downloadFiles.sh
+│   └── sshAndPullsecret.sh
+├── env
+├── haproxy
+│   ├── createHaproxy.sh
+│   ├── Dockerfile
+│   ├── haproxy.cfg
+│   ├── startHaproxy.sh
+│   └── stopHaproxy.sh
+├── LICENSE
+├── master
+│   ├── master0
+│   │   ├── connect.sh
+│   │   └── master0.sh
+│   ├── master1
+│   │   ├── connect.sh
+│   │   └── master1.sh
+│   └── master2
+│       ├── connect.sh
+│       └── master2.sh
+├── proxy
+│   ├── createSquid.sh
+│   ├── Dockerfile
+│   ├── entrypoint.sh
+│   ├── startSquid.sh
+│   └── stopSquid.sh
+├── pxe
+│   ├── boot.ipxe
+│   ├── createPXE.sh
+│   ├── dnsmasq.conf.dhcpproxy
+│   ├── Dockerfile
+│   ├── startPXE.sh
+│   └── stopPXE.sh
+├── README.md
+├── registry
+│   ├── createRegistry.sh
+│   ├── mirror.sh
+│   ├── startRegistry.sh
+│   └── stopRegistry.sh
+├── rhel8
+│   ├── approve.sh
+│   ├── connect.sh
+│   ├── create.sh
+│   └── hosts.sh
+├── setup.md
+├── snc
+│   ├── bootstrap.sh
+│   ├── connectBootstrap.sh
+│   ├── connectMaster.sh
+│   ├── master0.sh
+│   └── sncPatch.sh
+└── worker
+    ├── worker0
+    │   ├── approve.sh
+    │   ├── connect.sh
+    │   └── worker0.sh
+    ├── worker1
+    │   ├── approve.sh
+    │   ├── connect.sh
+    │   └── worker1.sh
+    └── worker2
+        ├── approve.sh
+        ├── connect.sh
+        └── worker2.sh
+
+17 directories, 56 files
+```
+##### Enable internet for VMs (MASQUERADE)
+```
+iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE
+```
+##### Import image for disconnected cluster
+```
+$ skopeo login --authfile pull-secret.json quay.io && \
+  skopeo copy docker://quay.io/openshift/origin-must-gather docker-archive:$(pwd)/must-gather.tar
+$ ssh core@bootstrap
+$ cd /tmp
+$ scp <user>@<IP>:/path/must-gather.tar .
+$ skopeo copy docker-archive:$(pwd)/must-gather.tar containers-storage:quay.io/openshift/origin-must-gather
+$ podman images | grep must-gather
+```
+##### Create a user with password authentication (username: foo, password: bar)
+If we are working with nework related problem, TTY conosle login is possible with this using VM's serial console.
+```
+$ cat << EOF > passwd.bu
+variant: fcos
+version: 1.3.0
+passwd:
+  users:
+    - name: foo
+      password_hash: $6$SALT$HsCT89cn4dek.8MuFh5ZRlC5A5ofnlqB6FxLX7v/lssLC7/6rutMtCvZxsixpkpLn9GXr1iiLuQyB8DpI2lyz/
+storage:
+  files:
+    - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
+      mode: 0644
+      contents:
+        inline: |
+          PasswordAuthentication yes
+EOF
+$ podman run --interactive --rm quay.io/coreos/butane:release --pretty --strict < passwd.bu > passwd.ign
+$ [ -f bootstrap.ign.bkp ] || cp bootstrap.ign bootstrap.ign.bkp
+$ jq -c --argjson var "$(jq .passwd.users passwd.ign)" '.passwd.users += $var' bootstrap.ign.bkp > bootstrap.ign.1
+$ jq -c --argjson var "$(jq .storage.files passwd.ign)" '.storage.files += $var' bootstrap.ign.1 > bootstrap.ign
+$ rm -vf bootstrap.ign.1
+```
