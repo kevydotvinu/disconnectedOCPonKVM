@@ -184,7 +184,18 @@ cp install-config.yaml install-config.yaml.bkp
 }
 
 function USAGE {
-	echo "Usage: bash $0 -t <connnected|disconnected|singlenode> -i <proxy|non-proxy>" 1>&2; exit 1;
+	echo "OpenShift install-config.yaml file creator"
+	echo ""
+	echo "This script helps you to create the install-config.yaml file as per your preference"
+	echo ""
+	echo "Usage:"
+        echo "  bash $0 -t [connnected|disconnected|singlenode] -i [proxy|non-proxy]"
+	echo ""
+	echo "Options"
+	echo "  -t: Installation method. One of:"
+	echo "      connected | disconnected | single node"
+	echo "  -i: Connetivity to the cluster. One of:"
+	echo "      proxy | non-proxy" 1>&2; exit 1;
 }
 
 function VALIDATE {
