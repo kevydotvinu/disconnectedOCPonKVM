@@ -40,3 +40,10 @@ downloads/openshift-client.tar.gz
 downloads/openshift-install.tar.gz
 snc/bootstrap.img
 snc/master0.img
+downloads/initramfs-*.img.done
+downloads/kernel-*.done
+downloads/openshift-client-*.tar.gz.done
+downloads/openshift-install-*.tar.gz.done
+downloads/rhcos-*.iso.done
+downloads/rootfs-*.img.done
+registry/checksum-*.yaml

@@ -14,8 +14,9 @@ function CONFIGURE_DNS {
 	rm -fv /etc/NetworkManager/conf.d/nm-dns.conf
 	echo -e "[main]\ndns=dnsmasq" > /etc/NetworkManager/conf.d/nm-dns.conf
 	rm -fv /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
-	echo "local=/${CLUSTER_NAME}.${DOMAIN}/" > /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
+#	echo "local=/${CLUSTER_NAME}.${DOMAIN}/" > /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
 	echo "address=/.apps.${CLUSTER_NAME}.${DOMAIN}/192.168.122.1" >> /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
+	echo "addn-hosts=/etc/hosts" >> /etc/NetworkManager/dnsmasq.d/${CLUSTER_NAME}.conf
 	sed -i '/192.168.122.90/d' /etc/hosts
 	sed -i '/192.168.122.91/d' /etc/hosts
 	sed -i '/192.168.122.92/d' /etc/hosts
@@ -33,7 +34,7 @@ function CONFIGURE_DNS {
 	echo "192.168.122.95 worker1.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.96 worker2.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.97 rhel8.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
-	echo "192.168.122.1 lb.${CLUSTER_NAME}.${DOMAIN}" "api.${CLUSTER_NAME}.${DOMAIN}" "api-int.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
+	echo "192.168.122.1 lb.${CLUSTER_NAME}.${DOMAIN}" "api.${CLUSTER_NAME}.${DOMAIN}" "api-int.${CLUSTER_NAME}.${DOMAIN}" "mirror.${CLUSTER_NAME}.${DOMAIN}" "proxy.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	systemctl reload NetworkManager
 	systemctl restart libvirtd
 }

@@ -18,7 +18,8 @@ ISO=$(dirname $(pwd))/downloads/rhcos.iso
 ROOTFS=http://${WEB_IP}:${WEB_PORT}/downloads/rootfs.img
 IGNITION=http://${WEB_IP}:${WEB_PORT}/cluster-files/bootstrap.ign
 DISK=$(pwd)/bootstrap.img
-for i in bootstrap master0 master1 master2 worker0 worker1 worker2 rhel8; do virsh destroy ${i} 2> /dev/null; virsh undefine ${i} 2> /dev/null; done
+for i in bootstrap master0 master1 master2 worker0 worker1 worker2 rhel8; do virsh destroy ${i} 2> /dev/null; done
+virsh undefine bootstrap 2> /dev/null
 virt-install --name ${VM_NAME} \
 	     --disk ${DISK} \
 	     --ram 16000 \

@@ -272,4 +272,3 @@ Add the below entries in the machine where the cluster does access.
 <kvm-host-ip> oauth-openshift.apps.ocp.example.local
 <kvm-host-ip> console-openshift-console.apps.ocp.example.local
 ```
-

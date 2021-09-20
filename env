@@ -1,4 +1,4 @@
-export RELEASE=4.8.2
+export RELEASE=4.9.0-fc.1
 export CLUSTER_NAME=ocp
 export DOMAIN=example.local
 export PATH=$PATH:$(pwd)/downloads

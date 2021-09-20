@@ -44,8 +44,7 @@ cat << EOF > ca-csr.json
 {
   "CN": "Red Hat, Inc.",
   "hosts": [
-    "bastion.${DOMAIN}",
-    "mirror.${DOMAIN}",
+    "mirror.${CLUSTER_NAME}.${DOMAIN}",
     "10.74.253.82",
     "192.168.122.1",
     "127.0.0.1",
@@ -69,8 +68,7 @@ cat << EOF > server.json
 {
   "CN": "Red Hat, Inc.",
   "hosts": [
-    "bastion.${DOMAIN}",
-    "mirror.${DOMAIN}",
+    "mirror.${CLUSTER_NAME}.${DOMAIN}",
     "10.74.253.82",
     "192.168.122.1",
     "127.0.0.1",

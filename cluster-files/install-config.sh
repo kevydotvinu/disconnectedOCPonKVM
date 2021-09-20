@@ -55,6 +55,40 @@ EOF
 cp install-config.yaml install-config.yaml.bkp
 }
 
+function DISCONNECTED_SNC {
+cat << EOF > install-config.yaml
+apiVersion: v1
+baseDomain: ${DOMAIN}
+compute: 
+- hyperthreading: Enabled 
+  name: worker
+  replicas: 0 
+controlPlane: 
+  hyperthreading: Enabled 
+  name: master
+  replicas: 1 
+metadata:
+  name: ${CLUSTER_NAME}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14 
+    hostPrefix: 23 
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - 172.30.0.0/16
+platform:
+  none: {} 
+fips: false 
+pullSecret: '${PULLSECRET}' 
+sshKey: '${SSHKEY}'
+$(sed -n '/imageContentSources:/,/^$/p' $(dirname $(pwd))/registry/dry-run.txt)
+additionalTrustBundle: |
+$(cat $(dirname $(pwd))/registry/certs/ca.pem | sed 's/^/    /')
+$(cat $(dirname $(pwd))/registry/certs/server.pem | sed 's/^/    /')
+EOF
+cp install-config.yaml install-config.yaml.bkp
+}
+
 function CONNECTED_PROXY {
 cat << EOF > install-config.yaml
 apiVersion: v1
@@ -119,7 +153,7 @@ EOF
 cp install-config.yaml install-config.yaml.bkp
 }
 
-function SNC_PROXY {
+function CONNECTED_PROXY_SNC {
 cat << EOF > install-config.yaml
 apiVersion: v1
 baseDomain: ${DOMAIN}
@@ -146,14 +180,16 @@ fips: false
 pullSecret: '${PULLSECRET}' 
 sshKey: '${SSHKEY}'
 proxy:
-  httpProxy: http://192.168.122.1:3128 
-  httpsProxy: http://192.168.122.1:3128 
+  httpProxy: http://192.168.122.1:4128 
+  httpsProxy: http://192.168.122.1:4128 
   noProxy: example.local,192.168.122.0/24 
+additionalTrustBundle: |
+$(cat $(dirname $(pwd))/proxy/cert/CA.pem | sed 's/^/    /')
 EOF
 cp install-config.yaml install-config.yaml.bkp
 }
 
-function SNC_NON_PROXY {
+function CONNECTED_NON_PROXY_SNC {
 cat << EOF > install-config.yaml
 apiVersion: v1
 baseDomain: ${DOMAIN}
@@ -202,54 +238,67 @@ function VALIDATE {
 	echo "Why disconnected + proxy ?!?" 1>&2; exit 1;
 }
 
-while getopts ":t:i:" o; do
+while getopts ":t:i:s:" o; do
     case "${o}" in
         t)
             t=${OPTARG}
             ;;
         i)
             i=${OPTARG}
-	    if [[ "${t}" == "disconnected" ]]; then
-		    if [[ "${i}" == "proxy" ]]; then
-			    VALIDATE
-		    elif [[ "${i}" == "non-proxy" ]]; then
-                            SSH_CHECK
-                            PULL_SECRET_CHECK
-			    DISCONNECTED && echo "✔ Completed"
-		    else
-			    USAGE
-		    fi
-	    elif [[ "${t}" == "connected" ]]; then
-		    if [[ "${i}" == "proxy" ]]; then
-                            SSH_CHECK
-                            PULL_SECRET_CHECK
-			    CONNECTED_PROXY && echo "✔ Completed"
-		    elif [[ "${i}" == "non-proxy" ]]; then
-                            SSH_CHECK
-                            PULL_SECRET_CHECK
-			    CONNECTED_NON_PROXY && echo "✔ Completed"
-                            echo "⚠ Please enable MASQUERADE"
+	    ;;
+        s)
+	    s=${OPTARG}
+            if [[ "${t}" == "disconnected" ]]; then
+                    if [[ "${i}" == "proxy" ]]; then
+                            VALIDATE
+                    elif [[ "${i}" == "non-proxy" ]]; then
+			    if [[ "${s}" == "single-node" ]]; then
+				    SSH_CHECK
+				    PULL_SECRET_CHECK
+				    DISCONNECTED_SNC && echo "✔ Completed"
+			    elif [[ "${s}" == "multi-node" ]]; then
+				    SSH_CHECK
+                                    PULL_SECRET_CHECK
+                                    DISCONNECTED && echo "✔ Completed"
+			    else
+				    USAGE
+			    fi
+                    else
+                            USAGE
+                    fi
+            elif [[ "${t}" == "connected" ]]; then
+                    if [[ "${i}" == "proxy" ]]; then
+			    if [[ "${s}" == "single-node" ]]; then
+				    SSH_CHECK
+				    PULL_SECRET_CHECK
+				    CONNECTED_PROXY_SNC && echo "✔ Completed"
+			    elif [[ "${s}" == "multi-node" ]]; then
+                                    SSH_CHECK
+                                    PULL_SECRET_CHECK
+                                    CONNECTED_PROXY && echo "✔ Completed"
+			    else
+				    USAGE
+			    fi
+                    elif [[ "${i}" == "non-proxy" ]]; then
+                            if [[ "${s}" == "single-node" ]]; then
+				    SSH_CHECK
+				    PULL_SECRET_CHECK
+				    CONNECTED_NON_PROXY_SNC && echo "✔ Completed"
+			    elif [[ "${s}" == "multi-node" ]]; then
+                                    SSH_CHECK
+                                    PULL_SECRET_CHECK
+                                    CONNECTED_NON_PROXY && echo "✔ Completed"
+                            echo "⚠ Please enable MASQUERADE on KVM host for guest VM internet"
                             echo "❱ iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE"
-		    else 
-			    USAGE
-		    fi
-            elif [[ "${t}" == "singlenode" ]]; then
-		    if [[ "${i}" == "proxy" ]]; then
-                            SSH_CHECK
-                            PULL_SECRET_CHECK
-			    SNC_PROXY && echo "✔ Completed"
-		    elif [[ "${i}" == "non-proxy" ]]; then
-                            SSH_CHECK
-                            PULL_SECRET_CHECK
-			    SNC_NON_PROXY && echo "✔ Completed"
-                            echo "⚠ Please enable MASQUERADE"
-                            echo "❱ iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE"
-		    else 
-			    USAGE
-		    fi
-	    else
-		    USAGE
-	    fi
+			    else
+				    USAGE
+			    fi
+                    else
+                            USAGE
+                    fi
+            else
+                    USAGE
+            fi
             ;;
         *)
             USAGE
@@ -258,6 +307,6 @@ while getopts ":t:i:" o; do
 done
 shift $((OPTIND-1))
 
-if [ -z "${t}" ] || [ -z "${i}" ]; then
+if [ -z "${t}" ] || [ -z "${i}" ] || [ -z "${s}" ]; then
     USAGE
 fi

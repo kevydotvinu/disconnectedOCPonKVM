@@ -12,6 +12,10 @@ function START_HAPROXY {
 	podman run --detach \
 	      	--net host \
 	      	--security-opt label=disable \
+		--volume $(pwd)/conf/squid.conf:/etc/squid/squid.conf \
+		--volume $(pwd)/cert:/etc/squid-cert \
+		--volume $(pwd)/cache:/var/cache/squid \
+		--volume $(pwd)/log:/var/log/squid \
 	      	--name squid localhost/kevydotvinu/squid
 }
 
