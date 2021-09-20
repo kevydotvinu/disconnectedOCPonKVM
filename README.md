@@ -147,6 +147,22 @@ $ bash hosts.sh && \
   ansible-playbook -i hosts /usr/share/ansible/openshift-ansible/playbooks/scaleup.yml
 $ bash approve.sh
 ```
+#### Upgrade cluster
+##### Set latest release
+```
+$ sed -i 's/RELEASE=.*/RELEASE=4.8.4/' env
+```
+##### Mirror OpenShift image repository
+```
+$ cd registry && \
+  bash mirror.sh
+```
+##### Initiate upgrade
+```
+$ source ./env
+$ TOIMAGE=$(oc adm release info mirror.ocp.example.local/ocp4/openshift4:${RELEASE} | grep "Pull From" | cut -d" " -f3)
+$ oc adm upgrade --image-to=${TOIMAGE} --allow-explicit-upgrade
+```
 #### Tips and Tricks
 ##### Directory structure
 ```
