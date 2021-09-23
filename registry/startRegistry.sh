@@ -31,4 +31,5 @@ DIR=$(/bin/pwd)
 source $(dirname $(pwd))/env
 
 STOP_REGISTRY
+sleep 10s
 RUN_REGISTRY

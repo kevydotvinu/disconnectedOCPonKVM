@@ -20,4 +20,5 @@ function START_HAPROXY {
 }
 
 STOP_HAPROXY
+sleep 10s
 START_HAPROXY
