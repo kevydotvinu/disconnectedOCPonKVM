@@ -34,17 +34,17 @@ function DOWNLOAD_RHCOS {
 }
 
 function DOWNLOAD_CLIENTS {
-	[[ -f openshift-client-${RELEASE}.tar.gz.done ]] || ( echo -n "Removing old file ..." && rm -fv openshift-client.tar.gz )
+	[[ -f openshift-client-${RELEASE}.tar.gz.done ]] || ( echo "Removing old file ..." && rm -fv openshift-client.tar.gz )
 	echo "Downloading openshift-client ..."
 	wget -c -q -O openshift-client.tar.gz https://mirror.openshift.com/${CLIENTS}/openshift-client-linux-${RELEASE}.tar.gz && rm -f openshift-client-*.tar.gz.done && touch openshift-client-${RELEASE}.tar.gz.done && echo "✔ Completed" || echo "✗ Failed"
-	[[ -f openshift-install-${RELEASE}.tar.gz.done ]] || ( echo -n "Removing old file ..." && rm -fv openshift-install.tar.gz )
+	[[ -f openshift-install-${RELEASE}.tar.gz.done ]] || ( echo "Removing old file ..." && rm -fv openshift-install.tar.gz )
 	echo "Downloading openshift-install ..."
         wget -c -q -O openshift-install.tar.gz https://mirror.openshift.com/${CLIENTS}/openshift-install-linux-${RELEASE}.tar.gz && rm -f openshift-install-*.tar.gz.done && touch openshift-install-${RELEASE}.tar.gz.done && echo "✔ Completed" || echo "✗ Failed"
-	echo "Extracting oc and openshift-install binaries ..."
-	echo -n "Old file " && rm -fv oc
-	echo -n "Old file " && rm -fv openshift-install
+	echo "Extracting oc binary ..."
+	echo "Removing old file ..." && rm -fv oc
         tar xfv openshift-client.tar.gz oc > /dev/null 2>&1 && echo "✔ Completed" || echo "✗ Failed"
-	rm -fv openshift-install
+	echo "Extracting openshift-install binary ..."
+	echo "Removing old file ..." && rm -fv openshift-install
         tar xfv openshift-install.tar.gz openshift-install > /dev/null 2>&1 && echo "✔ Completed" || echo "✗ Failed"
 }
 
