@@ -9,5 +9,5 @@ oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patc
 oc patch imagepruners.imageregistry.operator.openshift.io/cluster --type merge -p '{"spec":{"schedule":"0 0 * * *","suspend":false,"keepTagRevisions":3,"keepYoungerThan":60,"resources":{},"affinity":{},"nodeSelector":{},"tolerations":[],"startingDeadlineSeconds":60,"successfulJobsHistoryLimit":3,"failedJobsHistoryLimit":3}}'
 }
 
-export KUBECONFIG=$(pwd)/auth/kubeconfig
+export KUBECONFIG=$(dirname $(pwd))/cluster-files/auth/kubeconfig
 PATCH_CLUSTER
