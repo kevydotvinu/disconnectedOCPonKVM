@@ -33,7 +33,6 @@ function CONFIGURE_DNS {
 	echo "192.168.122.97 rhel8.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.1 lb.${CLUSTER_NAME}.${DOMAIN}" "api.${CLUSTER_NAME}.${DOMAIN}" "api-int.${CLUSTER_NAME}.${DOMAIN}" "mirror.${CLUSTER_NAME}.${DOMAIN}" "proxy.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	systemctl restart NetworkManager
-	systemctl restart libvirtd
 }
 
 function CONFIGURE_WEBSERVER {
@@ -74,6 +73,7 @@ function CONFIGURE_DHCP {
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.ocp.example.local' ip='192.168.122.98'/>" --live --config
 	virsh net-destroy default
 	virsh net-start default
+	systemctl restart libvirtd
 }
 
 function CONFIGURE_FIREWALL {
@@ -95,6 +95,7 @@ function CONFIGURE_FIREWALL {
 	iptables -I INPUT 1 -p tcp -m tcp --dport 80 -s $ALL -j ACCEPT
 	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 2> /dev/null
 	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p tcp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
+	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p udp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
 }
 
 source $(pwd)/env
