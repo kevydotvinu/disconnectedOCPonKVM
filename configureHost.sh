@@ -3,11 +3,7 @@
 
 function CHECK_PACKAGES {
 # Check and install required packages
-if rpm -q --quiet libvirt screen podman httpd-tools jq git openshift-ansible; then
-	echo "Required packages are installed!"
-else
-	echo "Please install the required packages mentioned in the README.md file"
-fi
+rpm -q --quiet libvirt screen podman httpd-tools jq git openshift-ansible
 }
 
 function CONFIGURE_DNS {
@@ -103,12 +99,12 @@ function CONFIGURE_FIREWALL {
 
 source $(pwd)/env
 
-CHECK_PACKAGES
-sleep 5s
-CONFIGURE_DNS
-sleep 5s
-CONFIGURE_WEBSERVER
-sleep 5s
-CONFIGURE_DHCP
-sleep 5s
-CONFIGURE_FIREWALL
+( CHECK_PACKAGES 1>/dev/null && echo "Required packages are installed" ) || echo "Error: Please install required packages mentioned in the README.md file"
+sleep 1s
+( CONFIGURE_DNS 1>/dev/null && echo "DNS configured" ) || echo "Error: DNS configuration failed"
+sleep 1s
+( CONFIGURE_WEBSERVER 1>/dev/null && echo "Web server configured" ) || echo "Error: Web server configuration failed"
+sleep 1s
+( CONFIGURE_DHCP 1>/dev/null && echo "DHCP entries added" ) || echo "Error: DHCP configuration failed"
+sleep 1s
+( CONFIGURE_FIREWALL 1>/dev/null && echo "Firewall configured" ) || echo "Error: Firewall configuration failed"

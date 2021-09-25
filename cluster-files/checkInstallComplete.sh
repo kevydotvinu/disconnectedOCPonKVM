@@ -7,7 +7,7 @@ function SET_ENV {
 }
 
 function OC_CONNECT {
-	oc get co
+	openshift-install --log-level debug wait-for install-complete
 }
 
 SET_ENV
