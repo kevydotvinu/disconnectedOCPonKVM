@@ -55,6 +55,11 @@ $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && \
 
 #### Configure host
 ```
+$ subscription-manager register
+$ subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-ansible-2.9-rpms" --enable="rhel-7-server-ose-4.7-rpms"
+$ yum -y update
+$ yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
+$ yum install -y screen podman httpd-tools jq git openshift-ansible
 $ bash configureHost.sh
 ```
 #### Download and prepare files

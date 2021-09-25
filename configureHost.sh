@@ -3,10 +3,11 @@
 
 function CHECK_PACKAGES {
 # Check and install required packages
-subscription-manager register
-subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-ose-4.7-rpms
-yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
-yum install -y screen podman httpd-tools jq git openshift-ansible
+if rpm -q --quiet libvirt screen podman httpd-tools jq git openshift-ansible; then
+	echo "Required packages are installed!"
+else
+	echo "Please install the required packages mentioned in the README.md file"
+fi
 }
 
 function CONFIGURE_DNS {
@@ -35,7 +36,7 @@ function CONFIGURE_DNS {
 	echo "192.168.122.96 worker2.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.97 rhel8.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
 	echo "192.168.122.1 lb.${CLUSTER_NAME}.${DOMAIN}" "api.${CLUSTER_NAME}.${DOMAIN}" "api-int.${CLUSTER_NAME}.${DOMAIN}" "mirror.${CLUSTER_NAME}.${DOMAIN}" "proxy.${CLUSTER_NAME}.${DOMAIN}" >> /etc/hosts
-	systemctl reload NetworkManager
+	systemctl restart NetworkManager
 	systemctl restart libvirtd
 }
 
@@ -69,10 +70,10 @@ function CONFIGURE_DHCP {
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.ocp.example.local' ip='192.168.122.94'/>" --live --config
         virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.ocp.example.local' ip='192.168.122.95'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.ocp.example.local' ip='192.168.122.95'/>" --live --config
-	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2.ocp.example.local' ip='192.168.122.96'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2.ocp.example.local' ip='192.168.122.96'/>" --live --config
-	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2.ocp.example.local' ip='192.168.122.97'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2.ocp.example.local' ip='192.168.122.97'/>" --live --config
+	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2a.ocp.example.local' ip='192.168.122.96'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2a.ocp.example.local' ip='192.168.122.96'/>" --live --config
+	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2b.ocp.example.local' ip='192.168.122.97'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2b.ocp.example.local' ip='192.168.122.97'/>" --live --config
 	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.ocp.example.local' ip='192.168.122.98'/>" --live --config 2> /dev/null
         virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.ocp.example.local' ip='192.168.122.98'/>" --live --config
 	virsh net-destroy default

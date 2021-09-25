@@ -94,8 +94,8 @@ EOF
 	chmod +x ${DIR}/cfssl ${DIR}/cfssljson
 	pushd $DIR/certs > /dev/null
 	$(dirname $(pwd))/cfssl version ; $(dirname $(pwd))/cfssljson --version
-	$(dirname $(pwd))/cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
-	$(dirname $(pwd))/cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server server.json | cfssljson -bare server
+	$(dirname $(pwd))/cfssl gencert -initca ca-csr.json | $(dirname $(pwd))/cfssljson -bare ca -
+	$(dirname $(pwd))/cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server server.json | $(dirname $(pwd))/cfssljson -bare server
 	popd > /dev/null
 }
 
