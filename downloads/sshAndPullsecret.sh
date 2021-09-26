@@ -1,13 +1,10 @@
 #!/bin/bash
 # Download pull secret using OpenShift Cluster Manager API Token
 
-function ARG_CHECK {
-# Take one argument from the commandline: API Token
-if ! [ $ARG -eq 1 ]; then
-    echo "Usage: $0 '<OCM API Token>'"
-    echo "You need to authenticate using a Bearer token, which you can get from the link: https://cloud.redhat.com/openshift/token"
-    exit 1
-fi
+function USAGE {
+	echo "Usage: $0 '<OCM API Token>'"
+        echo "You need to authenticate using a Bearer token, which you can get from the link: https://cloud.redhat.com/openshift/token"
+        exit 1
 }
 
 function DOWNLOAD_PULLSECRET {
@@ -22,12 +19,16 @@ function DOWNLOAD_PULLSECRET {
 }
 
 function SSH_KEY {
-	ssh-keygen -t ed25519 -N '' -f id_ed25519
+	ssh-keygen -q -t ed25519 -N '' -f id_ed25519
 }
 
-ARG=$#
-OCM_API_TOKEN=$1
+ARG_COUNT=${#}
+OCM_API_TOKEN=${1}
+ARG_SIZE=${#OCM_API_TOKEN}
 
-ARG_CHECK
-DOWNLOAD_PULLSECRET
-SSH_KEY
+if [ ${ARG_COUNT} -eq 1 ] && [ ${ARG_SIZE} -gt 50 ]; then
+	( DOWNLOAD_PULLSECRET 1>/dev/null && echo "✔ Pull secret downloaded" ) || echo "✗ Error: Pull secret download failed" 
+	( SSH_KEY && echo "✔ SSH key generated" ) || echo "✗ Error: SSH key generation failed"
+else
+	USAGE
+fi

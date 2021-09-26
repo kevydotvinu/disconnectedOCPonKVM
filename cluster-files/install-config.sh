@@ -288,8 +288,8 @@ while getopts ":t:i:s:" o; do
                                     SSH_CHECK
                                     PULL_SECRET_CHECK
                                     CONNECTED_NON_PROXY && echo "✔ Completed"
-                            echo "⚠ Please enable MASQUERADE on KVM host for guest VM internet"
-                            echo "❱ iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE"
+                            echo "⚠ Please enable guest VM internet"
+                            echo "❱ bash configureHost.sh -s vms-internet"
 			    else
 				    USAGE
 			    fi

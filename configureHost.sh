@@ -112,35 +112,35 @@ function USAGE {
 }
 
 function ALL {
-	( CHECK_PACKAGES 1>/dev/null && echo "Required packages are installed" ) || echo "Error: Please install required packages mentioned in the README.md file"
+	( CHECK_PACKAGES 1>/dev/null && echo "✔ Required packages are installed" ) || echo "✗ Error: Please install required packages mentioned in the README.md file"
 	sleep 1s
-	( CONFIGURE_DNS 1>/dev/null && echo "DNS configured" ) || echo "Error: DNS configuration failed"
+	( CONFIGURE_DNS 1>/dev/null && echo "✔ DNS configured" ) || echo "✗ Error: DNS configuration failed"
 	sleep 1s
-	( CONFIGURE_WEBSERVER 1>/dev/null && echo "Web server configured" ) || echo "Error: Web server configuration failed"
+	( CONFIGURE_WEBSERVER 1>/dev/null && echo "✔ Web server configured" ) || echo "✗ Error: Web server configuration failed"
 	sleep 1s
-	( CONFIGURE_DHCP 1>/dev/null && echo "DHCP entries added" ) || echo "Error: DHCP configuration failed"
+	( CONFIGURE_DHCP 1>/dev/null && echo "✔ DHCP entries added" ) || echo "✗ Error: DHCP configuration failed"
 	sleep 1s
-	( CONFIGURE_FIREWALL 1>/dev/null && echo "Firewall configured" ) || echo "Error: Firewall configuration failed"
+	( CONFIGURE_FIREWALL 1>/dev/null && echo "✔ Firewall configured" ) || echo "✗ Error: Firewall configuration failed"
 }
 
 function DNS {
-	( CONFIGURE_DNS 1>/dev/null && echo "DNS configured" ) || echo "Error: DNS configuration failed"
+	( CONFIGURE_DNS 1>/dev/null && echo "✔ DNS configured" ) || echo "✗ Error: DNS configuration failed"
 }
 
 function WEB_SERVER {
-	( CONFIGURE_WEBSERVER 1>/dev/null && echo "Web server configured" ) || echo "Error: Web server configuration failed"
+	( CONFIGURE_WEBSERVER 1>/dev/null && echo "✔ Web server configured" ) || echo "✗ Error: Web server configuration failed"
 }
 
 function DHCP {
-	( CONFIGURE_DHCP 1>/dev/null && echo "DHCP entries added" ) || echo "Error: DHCP configuration failed"
+	( CONFIGURE_DHCP 1>/dev/null && echo "✔ DHCP entries added" ) || echo "✗ Error: DHCP configuration failed"
 }
 
 function FIREWALL {
-	( CONFIGURE_FIREWALL 1>/dev/null && echo "Firewall configured" ) || echo "Error: Firewall configuration failed"
+	( CONFIGURE_FIREWALL 1>/dev/null && echo "✔ Firewall configured" ) || echo "✗ Error: Firewall configuration failed"
 }
 
 function VMS_INTERNET {
-	( iptables -t nat -A POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 1>/dev/null && echo "Enabled internet for guest VMs" ) || echo "Error: Firewall configuration failed"
+	( iptables -t nat -A POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 1>/dev/null && echo "✔ Enabled internet for guest VMs" ) || echo "✗ Error: Firewall configuration failed"
 }
 
 source $(pwd)/env
