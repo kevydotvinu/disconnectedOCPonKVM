@@ -10,7 +10,7 @@ function CHECK_DISK {
 function CREATE_VM {
 MAC=$(ip a s $(virsh net-info default | awk '/Bridge:/{print $2}') | awk '/ether /{print $2}' | cut -f1-4 -d':')
 MAC1=$MAC:91:96
-MAC2=$MAC:91:99
+MAC2=$MAC:91:97
 VIRT_NET=default
 VM_NAME=worker2
 WEB_IP=192.168.122.1

@@ -167,8 +167,8 @@ popd > /dev/null
 ARG=$#
 NAME=$1
 DIR=$(/bin/pwd)
-MEM=1024
-CPUS=1
+MEM=8000
+CPUS=2
 # NETWORK='bridge=virbr0'
 NETWORK='network=default'
 MAC=$(ip a s $(virsh net-info default | awk '/Bridge:/{print $2}') | awk '/ether /{print $2}' | cut -f1-4 -d':')
