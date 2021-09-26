@@ -60,7 +60,7 @@ $ subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-serv
 $ yum -y update
 $ yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
 $ yum install -y screen podman httpd-tools jq git openshift-ansible
-$ bash configureHost.sh
+$ bash configureHost.sh -s all
 ```
 #### Download and prepare files
 ```
@@ -169,88 +169,9 @@ $ TOIMAGE=$(oc adm release info mirror.ocp.example.local/ocp4/openshift4:${RELEA
 $ oc adm upgrade --image-to=${TOIMAGE} --allow-explicit-upgrade
 ```
 #### Tips and Tricks
-##### Directory structure
+##### Enable internet for guest VMs
 ```
-.
-├── bootstrap
-│   ├── bootstrap.sh
-│   └── connect.sh
-├── cluster-files
-│   ├── connect.sh
-│   ├── createManifestsAndIgnitionConfig.sh
-│   └── install-config.sh
-├── configureHost.sh
-├── downloads
-│   ├── downloadFiles.sh
-│   └── sshAndPullsecret.sh
-├── env
-├── haproxy
-│   ├── createHaproxy.sh
-│   ├── Dockerfile
-│   ├── haproxy.cfg
-│   ├── startHaproxy.sh
-│   └── stopHaproxy.sh
-├── LICENSE
-├── master
-│   ├── master0
-│   │   ├── connect.sh
-│   │   └── master0.sh
-│   ├── master1
-│   │   ├── connect.sh
-│   │   └── master1.sh
-│   └── master2
-│       ├── connect.sh
-│       └── master2.sh
-├── proxy
-│   ├── createSquid.sh
-│   ├── Dockerfile
-│   ├── entrypoint.sh
-│   ├── startSquid.sh
-│   └── stopSquid.sh
-├── pxe
-│   ├── boot.ipxe
-│   ├── createPXE.sh
-│   ├── dnsmasq.conf.dhcpproxy
-│   ├── Dockerfile
-│   ├── startPXE.sh
-│   └── stopPXE.sh
-├── README.md
-├── registry
-│   ├── createRegistry.sh
-│   ├── mirror.sh
-│   ├── startRegistry.sh
-│   └── stopRegistry.sh
-├── rhel8
-│   ├── approve.sh
-│   ├── connect.sh
-│   ├── create.sh
-│   └── hosts.sh
-├── setup.md
-├── snc
-│   ├── bootstrap.sh
-│   ├── connectBootstrap.sh
-│   ├── connectMaster.sh
-│   ├── master0.sh
-│   └── sncPatch.sh
-└── worker
-    ├── worker0
-    │   ├── approve.sh
-    │   ├── connect.sh
-    │   └── worker0.sh
-    ├── worker1
-    │   ├── approve.sh
-    │   ├── connect.sh
-    │   └── worker1.sh
-    └── worker2
-        ├── approve.sh
-        ├── connect.sh
-        └── worker2.sh
-
-17 directories, 56 files
-```
-##### Enable internet for VMs (MASQUERADE)
-```
-iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE
+$ bash configureHost.sh -s vms-internet
 ```
 ##### Import image for disconnected cluster
 ```
@@ -292,4 +213,9 @@ Add the below entries in the machine where the cluster does access.
 <kvm-host-ip> api.ocp.example.local
 <kvm-host-ip> oauth-openshift.apps.ocp.example.local
 <kvm-host-ip> console-openshift-console.apps.ocp.example.local
+```
+##### Check upgrade path
+```
+cd registry &&
+bash checkUpgradePath.sh
 ```

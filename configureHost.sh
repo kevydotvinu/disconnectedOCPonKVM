@@ -79,6 +79,9 @@ function CONFIGURE_DHCP {
 function CONFIGURE_FIREWALL {
 	CIDR=$(ip -4 a s $(virsh net-info default | awk '/Bridge:/{print $2}') | awk '/inet /{print $2}')
 	ALL=0.0.0.0/0
+	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 2> /dev/null
+	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p tcp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
+	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p udp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
 	iptables -D INPUT -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 3128 -s $CIDR -j ACCEPT 2> /dev/null
@@ -93,19 +96,83 @@ function CONFIGURE_FIREWALL {
 	iptables -I INPUT 1 -p tcp -m tcp --dport 443 -s $ALL -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 80 -s $ALL -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 80 -s $ALL -j ACCEPT
-	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 2> /dev/null
-	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p tcp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
-	iptables -t nat -D POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -p udp -j MASQUERADE --to-ports 1024-65535 2> /dev/null
+}
+
+function USAGE {
+        echo "Configure the host for Disconnected OpenShift cluster deployment"
+        echo ""
+        echo "This script helps you to check the required packages and configure the DNS, web server, DHCP and firewall services"
+        echo ""
+        echo "Usage:"
+        echo "  bash $0 -s [all|dns|web-server|dhcp|firewall|vms-internet]"
+        echo ""
+        echo "Options"
+        echo "  -s: Service to be configured. One of:"
+        echo "      all (all except guest vms internet) | dns | web-server | dhcp | firewall | vms-internet"
+}
+
+function ALL {
+	( CHECK_PACKAGES 1>/dev/null && echo "Required packages are installed" ) || echo "Error: Please install required packages mentioned in the README.md file"
+	sleep 1s
+	( CONFIGURE_DNS 1>/dev/null && echo "DNS configured" ) || echo "Error: DNS configuration failed"
+	sleep 1s
+	( CONFIGURE_WEBSERVER 1>/dev/null && echo "Web server configured" ) || echo "Error: Web server configuration failed"
+	sleep 1s
+	( CONFIGURE_DHCP 1>/dev/null && echo "DHCP entries added" ) || echo "Error: DHCP configuration failed"
+	sleep 1s
+	( CONFIGURE_FIREWALL 1>/dev/null && echo "Firewall configured" ) || echo "Error: Firewall configuration failed"
+}
+
+function DNS {
+	( CONFIGURE_DNS 1>/dev/null && echo "DNS configured" ) || echo "Error: DNS configuration failed"
+}
+
+function WEB_SERVER {
+	( CONFIGURE_WEBSERVER 1>/dev/null && echo "Web server configured" ) || echo "Error: Web server configuration failed"
+}
+
+function DHCP {
+	( CONFIGURE_DHCP 1>/dev/null && echo "DHCP entries added" ) || echo "Error: DHCP configuration failed"
+}
+
+function FIREWALL {
+	( CONFIGURE_FIREWALL 1>/dev/null && echo "Firewall configured" ) || echo "Error: Firewall configuration failed"
+}
+
+function VMS_INTERNET {
+	( iptables -t nat -A POSTROUTING -s 192.168.122.0/24 ! -d 192.168.122.0/24 -j MASQUERADE 1>/dev/null && echo "Enabled internet for guest VMs" ) || echo "Error: Firewall configuration failed"
 }
 
 source $(pwd)/env
 
-( CHECK_PACKAGES 1>/dev/null && echo "Required packages are installed" ) || echo "Error: Please install required packages mentioned in the README.md file"
-sleep 1s
-( CONFIGURE_DNS 1>/dev/null && echo "DNS configured" ) || echo "Error: DNS configuration failed"
-sleep 1s
-( CONFIGURE_WEBSERVER 1>/dev/null && echo "Web server configured" ) || echo "Error: Web server configuration failed"
-sleep 1s
-( CONFIGURE_DHCP 1>/dev/null && echo "DHCP entries added" ) || echo "Error: DHCP configuration failed"
-sleep 1s
-( CONFIGURE_FIREWALL 1>/dev/null && echo "Firewall configured" ) || echo "Error: Firewall configuration failed"
+while getopts ":s:" o; do
+    case "${o}" in
+        s)
+            s=${OPTARG}
+            if [[ "${s}" == "all" ]]; then
+            	ALL
+            elif [[ "${s}" == "dns" ]]; then
+                DNS
+            elif [[ "${s}" == "web-server" ]]; then
+                WEB_SERVER
+            elif [[ "${s}" == "dhcp" ]]; then
+                DHCP
+            elif [[ "${s}" == "firewall" ]]; then
+                FIREWALL
+            elif [[ "${s}" == "vms-internet" ]]; then
+                VMS_INTERNET
+            else
+                USAGE
+            fi
+            ;;
+        *)
+            USAGE
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${s}" ]; then
+    USAGE
+fi
