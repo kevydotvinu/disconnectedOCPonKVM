@@ -28,7 +28,7 @@ create_cert() {
 		openssl req -new -newkey rsa:2048 -sha256 -days 3650 -nodes -x509 \
 			-extensions v3_ca -keyout /etc/squid-cert/private.pem \
 			-out /etc/squid-cert/private.pem \
-			-subj "/CN=squid.example.local/O=Squid/OU=Squid/C=IN" -utf8 -nameopt multiline,utf8
+			-subj "/CN=proxy.ocp.example.local/O=Squid/OU=Squid/C=IN" -utf8 -nameopt multiline,utf8
 
 		openssl x509 -in /etc/squid-cert/private.pem \
 			-outform DER -out /etc/squid-cert/CA.der

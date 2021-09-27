@@ -86,6 +86,8 @@ function CONFIGURE_FIREWALL {
 	iptables -I INPUT 1 -p tcp -m tcp --dport 8080 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 3128 -s $CIDR -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 3128 -s $CIDR -j ACCEPT
+	iptables -D INPUT -p tcp -m tcp --dport 4128 -s $CIDR -j ACCEPT 2> /dev/null
+	iptables -I INPUT 1 -p tcp -m tcp --dport 4128 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 5000 -s $CIDR -j ACCEPT 2> /dev/null
 	iptables -I INPUT 1 -p tcp -m tcp --dport 5000 -s $CIDR -j ACCEPT
 	iptables -D INPUT -p tcp -m tcp --dport 6443 -s $ALL -j ACCEPT 2> /dev/null

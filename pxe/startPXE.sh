@@ -3,7 +3,6 @@
 function STOP_PXE {
 podman kill $(sudo podman ps -a | grep pxe | awk '{print $1}') 2> /dev/null
 podman rm -f $(sudo podman ps -a | grep pxe | awk '{print $1}') 2> /dev/null
-podman rm -f --storage pxe 2> /dev/null
 }
 
 function START_PXE {

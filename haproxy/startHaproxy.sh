@@ -4,8 +4,6 @@
 function STOP_HAPROXY {
 	podman kill $(sudo podman ps -a | grep haproxy | awk '{print $1}') 2> /dev/null
 	podman rm -f $(sudo podman ps -a | grep haproxy | awk '{print $1}') 2> /dev/null
-	podman rm --storage --force haproxy 2> /dev/null
-	
 }
 
 function START_HAPROXY {

@@ -23,8 +23,7 @@ function RUN_REGISTRY {
 
 function STOP_REGISTRY {
 	podman kill $(podman ps | grep registry | awk '{print $1}') 2> /dev/null
-	podman rm $(podman ps -a | grep registry | awk '{print $1}') 2> /dev/null
-	podman rm --storage mirror-registry 2> /dev/null
+	podman rm -f $(podman ps -a | grep registry | awk '{print $1}') 2> /dev/null
 }
 
 DIR=$(/bin/pwd)
