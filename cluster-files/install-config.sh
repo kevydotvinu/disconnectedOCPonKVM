@@ -116,9 +116,11 @@ fips: false
 pullSecret: '${PULLSECRET}' 
 sshKey: '${SSHKEY}'
 proxy:
-  httpProxy: http://192.168.122.1:3128 
-  httpsProxy: http://192.168.122.1:3128 
+  httpProxy: http://192.168.122.1:4128 
+  httpsProxy: http://192.168.122.1:4128 
   noProxy: example.local,192.168.122.0/24 
+additionalTrustBundle: |
+$(cat $(dirname $(pwd))/proxy/cert/CA.pem | sed 's/^/    /')
 EOF
 cp install-config.yaml install-config.yaml.bkp
 }
