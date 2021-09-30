@@ -12,25 +12,33 @@ else echo "Using OpenShift" ${RELEASE} "release ..."
 fi
 
 function GET_PATH {
-	RHCOS=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -Fe ${RELEASE} | cut -d'/' -f3-)
-	[ -n "${RHCOS}" ] || { echo "RHCOS path not found"; exit 1; }
+	RELEASE_CUT=$(echo ${RELEASE} | cut -d"." -f1-2)
+	if echo ${RELEASE} | grep -qE '(^[0-9][.][0-9][.][0-9]$|^[0-9][.][0-9][.][0-9][0-9]$)'; then
+		RHCOS=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' | head -1 | cut -d'/' -f3-)
+		RHCOS_RELEASE=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' | head -1 | rev | cut -d'/' -f1 | rev)
+		[ -n "${RHCOS}" ] || { echo "RHCOS path not found"; exit 1; }
+	else
+		RHCOS=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -Fe ${RELEASE} | cut -d'/' -f3-)
+		RHCOS_RELEASE=${RELEASE}
+		[ -n "${RHCOS}" ] || { echo "RHCOS path not found"; exit 1; }
+	fi
 	CLIENTS=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e clients/ocp | grep -Fe ${RELEASE} | cut -d'/' -f3-) || echo "Clients path not found"
 	[ -n "${CLIENTS}" ] || { echo "Client binaries path not found"; exit 1; }
 }
 
 function DOWNLOAD_RHCOS {
-	[[ -f rhcos-${RELEASE}.iso.done ]] || ( echo "Removing old file ..." && rm -fv rhcos.iso )
+	[[ -f rhcos-${RHCOS_RELEASE}.iso.done ]] || ( echo "Removing old file ..." && rm -fv rhcos.iso )
 	echo "Downloading rhcos.iso ..."
-        wget -c -q -O rhcos.iso https://mirror.openshift.com/${RHCOS}/rhcos-${RELEASE}-x86_64-live.x86_64.iso && rm -f rhcos-*.iso.done && touch rhcos-${RELEASE}.iso.done && echo "✔ Completed" || echo "✗ Failed"
-	[[ -f rootfs-${RELEASE}.img.done ]] || ( echo "Removing old file ..." && rm -fv rootfs.img )
+        wget -c -q -O rhcos.iso https://mirror.openshift.com/${RHCOS}/rhcos-${RHCOS_RELEASE}-x86_64-live.x86_64.iso && rm -f rhcos-*.iso.done && touch rhcos-${RHCOS_RELEASE}.iso.done && echo "✔ Completed" || echo "✗ Failed"
+	[[ -f rootfs-${RHCOS_RELEASE}.img.done ]] || ( echo "Removing old file ..." && rm -fv rootfs.img )
 	echo "Downloading rootfs.img ..."
-        wget -c -q -O rootfs.img https://mirror.openshift.com/${RHCOS}/rhcos-${RELEASE}-x86_64-live-rootfs.x86_64.img && rm -f rootfs-*.img.done && touch rootfs-${RELEASE}.img.done && echo "✔ Completed" || echo "✗ Failed"
-	[[ -f kernel-${RELEASE}.done ]] || ( echo "Removing old file ..." && rm -fv kernel )
+        wget -c -q -O rootfs.img https://mirror.openshift.com/${RHCOS}/rhcos-${RHCOS_RELEASE}-x86_64-live-rootfs.x86_64.img && rm -f rootfs-*.img.done && touch rootfs-${RHCOS_RELEASE}.img.done && echo "✔ Completed" || echo "✗ Failed"
+	[[ -f kernel-${RHCOS_RELEASE}.done ]] || ( echo "Removing old file ..." && rm -fv kernel )
 	echo "Downloading kernel ..."
-        wget -c -q -O kernel https://mirror.openshift.com/${RHCOS}/rhcos-${RELEASE}-x86_64-live-kernel-x86_64 && rm -f kernel-*.done && touch kernel-${RELEASE}.done && echo "✔ Completed" || echo "Failed"
-	[[ -f initramfs-${RELEASE}.img.done ]] || ( echo "Removing old file ..." && rm -fv initramfs.img )
+        wget -c -q -O kernel https://mirror.openshift.com/${RHCOS}/rhcos-${RHCOS_RELEASE}-x86_64-live-kernel-x86_64 && rm -f kernel-*.done && touch kernel-${RHCOS_RELEASE}.done && echo "✔ Completed" || echo "Failed"
+	[[ -f initramfs-${RHCOS_RELEASE}.img.done ]] || ( echo "Removing old file ..." && rm -fv initramfs.img )
 	echo "Downloading initramfs.img ..."
-        wget -c -q -O initramfs.img https://mirror.openshift.com/${RHCOS}/rhcos-${RELEASE}-x86_64-live-initramfs.x86_64.img && rm -f initramfs-*.img.done && touch initramfs-${RELEASE}.img.done && echo "✔ Completed" || echo "✗ Failed"
+        wget -c -q -O initramfs.img https://mirror.openshift.com/${RHCOS}/rhcos-${RHCOS_RELEASE}-x86_64-live-initramfs.x86_64.img && rm -f initramfs-*.img.done && touch initramfs-${RHCOS_RELEASE}.img.done && echo "✔ Completed" || echo "✗ Failed"
 }
 
 function DOWNLOAD_CLIENTS {
