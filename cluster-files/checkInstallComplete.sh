@@ -6,9 +6,19 @@ function SET_ENV {
 	export KUBECONFIG=$(dirname $(pwd))/cluster-files/auth/kubeconfig
 }
 
-function OC_CONNECT {
+function APPROVE_CSR {
+	while true; do
+	oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs --no-run-if-empty oc adm certificate approve
+	sleep 10s
+	done
+}
+
+function WAIT_FOR_COMPLETE {
 	openshift-install --log-level debug wait-for install-complete
 }
 
 SET_ENV
-OC_CONNECT
+APPROVE_CSR &
+PID=$!
+trap "kill ${PID}" EXIT SIGINT SIGTERM
+WAIT_FOR_COMPLETE

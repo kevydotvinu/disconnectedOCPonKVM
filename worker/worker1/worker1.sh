@@ -27,10 +27,11 @@ virt-install --name ${VM_NAME} \
 	     --network network=${VIRT_NET},mac=${MAC} \
 	     --location ${ISO} \
 	     --nographics \
+	     --noautoconsole \
 	     --extra-args "nomodeset rd.neednet=1 console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=vda coreos.live.rootfs_url=http://${WEB_IP}:${WEB_PORT}/downloads/rootfs.img coreos.inst.ignition_url=http://${WEB_IP}:${WEB_PORT}/cluster-files/worker.ign"
 }
 
 source $(dirname $(dirname $(pwd)))/env
 
-CHECK_DISK
-CREATE_VM
+CHECK_DISK > /dev/null
+( CREATE_VM 1>/dev/null && echo "✔ Worker1 VM created" ) || echo "✗ Error: Worker1 VM creation failed"

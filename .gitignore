@@ -47,3 +47,4 @@ downloads/openshift-install-*.tar.gz.done
 downloads/rhcos-*.iso.done
 downloads/rootfs-*.img.done
 registry/checksum-*.yaml
+cluster-files/*.done

@@ -19,6 +19,7 @@ function DOWNLOAD_PULLSECRET {
 }
 
 function SSH_KEY {
+	rm -fv id_ed25519 id_ed25519.pub
 	ssh-keygen -q -t ed25519 -N '' -f id_ed25519
 }
 

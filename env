@@ -1,4 +1,5 @@
 export RELEASE=
+export OCM_TOKEN=
 export CLUSTER_NAME=ocp
 export DOMAIN=example.local
 export PATH=$PATH:$(pwd)/downloads

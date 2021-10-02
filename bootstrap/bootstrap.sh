@@ -29,10 +29,11 @@ virt-install --name ${VM_NAME} \
 	     --network network=${VIRT_NET},mac=${MAC} \
 	     --location ${ISO} \
 	     --nographics \
+	     --noautoconsole \
 	     --extra-args "nomodeset rd.neednet=1 console=tty0 console=ttyS0 coreos.inst=yes coreos.inst.install_dev=vda coreos.live.rootfs_url=${ROOTFS} coreos.inst.ignition_url=${IGNITION}"
 }
 
 source $(dirname $(pwd))/env
 
-CHECK_DISK
-CREATE_VM
+CHECK_DISK > /dev/null
+( CREATE_VM 1>/dev/null && echo "✔ Bootstrap VM created" ) || echo "✗ Error: Bootstrap VM creation failed"
