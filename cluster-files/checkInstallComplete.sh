@@ -14,7 +14,7 @@ function APPROVE_CSR {
 }
 
 function WAIT_FOR_COMPLETE {
-	openshift-install --log-level debug wait-for install-complete
+	for i in 1 2 3; do openshift-install --log-level debug wait-for install-complete; if [[ $? == 0 ]]; then break; fi; done
 }
 
 SET_ENV

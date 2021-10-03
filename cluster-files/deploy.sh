@@ -43,17 +43,17 @@ function CHECK {
 	bash checkInstallComplete.sh
 }
 
-[[ -f host-configure-${RELEASE}.done ]] || ( CONFIGURE_HOST && rm -f host-configure-*.done && touch host-configure-${RELEASE}.done )
+[[ -f host-configure-${RELEASE}.done ]] || ( ( CONFIGURE_HOST && rm -f host-configure-*.done && touch host-configure-${RELEASE}.done ) || exit 1 )
 echo "Host configuration done"
-[[ -f download-files-${RELEASE}.done ]] || ( DOWNLOAD_FILES && rm -f download-files-*.done && touch download-files-${RELEASE}.done )
+[[ -f download-files-${RELEASE}.done ]] || ( ( DOWNLOAD_FILES && rm -f download-files-*.done && touch download-files-${RELEASE}.done ) || exit 1 )
 echo "Downloads done"
-[[ -f setup-registry-${RELEASE}.done ]] || ( SETUP_REGISTRY && rm -f setup-registry-*.done  && touch setup-registry-${RELEASE}.done )
+[[ -f setup-registry-${RELEASE}.done ]] || ( ( SETUP_REGISTRY && rm -f setup-registry-*.done  && touch setup-registry-${RELEASE}.done ) || exit 1 )
 echo "Registry configuration done"
-[[ -f setup-haproxy-${RELEASE}.done ]] || ( SETUP_HAPROXY && rm -f setup-haproxy-*.done  && touch setup-haproxy-${RELEASE}.done )
+[[ -f setup-haproxy-${RELEASE}.done ]] || ( ( SETUP_HAPROXY && rm -f setup-haproxy-*.done  && touch setup-haproxy-${RELEASE}.done ) || exit 1 )
 echo "Haproxy configuration done"
-[[ -f cluster-files-${RELEASE}.done ]] || ( CREATE_CLUSTER_FILES && rm -f cluster-files-*.done  && touch cluster-files-${RELEASE}.done )
+[[ -f cluster-files-${RELEASE}.done ]] || ( ( CREATE_CLUSTER_FILES && rm -f cluster-files-*.done  && touch cluster-files-${RELEASE}.done ) || exit 1 )
 echo "Cluster files created"
-[[ -f deploy-${RELEASE}.done ]] || ( DEPLOY && rm -f deploy-*.done  && touch deploy-${RELEASE}.done )
+[[ -f deploy-${RELEASE}.done ]] || ( ( DEPLOY && rm -f deploy-*.done  && touch deploy-${RELEASE}.done ) || exit 1 )
 echo "Cluster deploying ..."
 CHECK
 if [[ $? == 0 ]]; then echo "Cluster deployed"; else echo "Cluster not deployed"; fi
