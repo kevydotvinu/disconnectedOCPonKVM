@@ -15,12 +15,12 @@ function GET_PATH {
 	RELEASE_CUT=$(echo ${RELEASE} | cut -d"." -f1-2)
 	if echo ${RELEASE} | grep -qE '(^[0-9][.][0-9][.][0-9]$|^[0-9][.][0-9][.][0-9][0-9]$|^[0-9][.][0-9][0-9][.][0-9][0-9]$)'; then
 		RHCOS_EQ_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -Fe ${RELEASE} | cut -d'/' -f3-)
-		RHCOS_LE_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' | head -1 | cut -d'/' -f3-)
+		RHCOS_LE_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' -e ${RELEASE_CUT}'[.][0-9][0-9]$' | tail -n 2 | head -n 1 | cut -d'/' -f3-)
 		RHCOS=${RHCOS_EQ_VER:=$RHCOS_LE_VER}
-		if [[ ${RHCOS_EQ_VER} == ${RHCOS_LE_VER} ]]; then
+		if [[ "${RHCOS_EQ_VER}" != "${RHCOS_LE_VER}" ]]; then
 			RHCOS_RELEASE=${RELEASE}
 		else
-			RHCOS_RELEASE=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' | head -1 | rev | cut -d'/' -f1 | rev)
+			RHCOS_RELEASE=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' -e ${RELEASE_CUT}'[.][0-9][0-9]$' | tail -n 2 | head -n 1 | rev | cut -d'/' -f1 | rev)
 		fi
 		[ -n "${RHCOS}" ] || { echo "RHCOS path not found"; exit 1; }
 		[ -n "${RHCOS_RELEASE}" ] || { echo "RHCOS path not found"; exit 1; }
