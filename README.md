@@ -136,18 +136,18 @@ $ cd ../bootstrap && \
 ##### Master node
 ```
 $ cd ../master/master0 && \
-  bash master.sh
+  bash master0.sh
 $ cd ../master/master1 && \
-  bash master.sh
+  bash master1.sh
 $ cd ../master/master2 && \
-  bash master.sh
+  bash master2.sh
 ```
 ##### Worker node
 ```
 $ cd ../worker/worker0 && \
-  bash worker.sh
+  bash worker0.sh
 $ cd ../worker/worker1 && \
-  bash worker.sh
+  bash worker1.sh
 ```
 ###### Create worker node from PXE server with NIC bonding
 ```
@@ -155,7 +155,7 @@ $ cd ../../pxe && \
   bash createPXE.sh && \
   bash startPXE.sh
 $ cd ../worker/worker2 && \
-  bash worker.sh
+  bash worker2.sh
 ```
 ###### Create and add RHEL8 worker node to the cluster
 ```
@@ -196,9 +196,27 @@ $ scp <user>@<IP>:/path/must-gather.tar .
 $ skopeo copy docker-archive:$(pwd)/must-gather.tar containers-storage:quay.io/openshift/origin-must-gather
 $ podman images | grep must-gather
 ```
+```
+$ cd downloads
+$ skopeo copy --authfile pull-secret.json docker://registry.redhat.io/rhel8/support-tools docker://mirror.ocp.example.local:5000/rhel8/support-tools
+$ cat << EOF > image-policy-2.yaml
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  name: image-policy-2
+spec:
+  repositoryDigestMirrors:
+  - mirrors:
+    - mirror.ocp.example.local:5000/rhel8/support-tools
+    source: registry.redhat.io/rhel8/support-tools
+EOF
+$ oc create -f image-policy-2.yaml
+$ watch oc get mcp
+```
 ##### Create a user with password authentication (username: foo, password: bar)
 If we are working with nework related problem, TTY conosle login is possible with this using VM's serial console.
 ```
+$ cd cluster-files
 $ cat << EOF > passwd.bu
 variant: fcos
 version: 1.3.0
