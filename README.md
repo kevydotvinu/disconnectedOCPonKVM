@@ -192,7 +192,8 @@ $ bash configureHost.sh -s vms-internet
 ##### Import image for disconnected cluster
 ```
 $ cd downloads
-$ skopeo copy --authfile pull-secret.json docker://quay.io/openshift/origin-must-gather docker-archive:$(pwd)/must-gather.tar
+$ skopeo copy --authfile pull-secret.json docker://quay.io/openshift/origin-must-gather \
+                                          docker-archive:$(pwd)/must-gather.tar
 $ ssh core@bootstrap
 $ cd /tmp
 $ scp <user>@<IP>:/path/must-gather.tar .
