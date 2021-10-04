@@ -47,9 +47,9 @@
 #### Needs
 
 * A virtual machine with pass-through host CPU enabled. The host resources must meet:
-   * RAM: **120 GB**
-   * CPU: **30**
-   * DISK: **360 GB**
+   * RAM: 120 GB
+   * CPU: 30
+   * DISK: 360 GB
 
 * Example Pass-Through Host CPU configuration in RHV
 
