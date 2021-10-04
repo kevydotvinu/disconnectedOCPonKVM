@@ -57,7 +57,7 @@
 ![enter image description here](https://raw.githubusercontent.com/kevydotvinu/disconnectedOCPonKVM/main/.img/passThroughHostCpu.png)
 
 * RHEL 7 operating system
-  * For additional disk, make filesystem using `mkfs -t xfs -n ftype=1 /dev/<disk>` command. For overlay fs, ftype=1 is a requirement.
+  * For additional disk, make filesystem using `mkfs -t xfs -n ftype=1 /dev/<disk>` command. For overlay fs, `ftype=1` is a requirement.
 
 #### Get script
 ```
