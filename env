@@ -1,4 +1,4 @@
-export RELEASE=4.7.8
+export RELEASE=
 export OCM_TOKEN=
 export CLUSTER_NAME=ocp
 export DOMAIN=example.local
