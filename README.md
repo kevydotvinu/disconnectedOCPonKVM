@@ -1,3 +1,12 @@
+### TL;DR
+#### A script-based deployment of OpenShift Container Platform on a restricted network
+##### Requirements
+* RHEL 7 virtual machine with KVM and [other packages](#install-packages) installed
+* OpenShift Container Platform release version
+* OCM API Token from [here](https://console.redhat.com/openshift/token/)
+##### Demo
+[![asciicast](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e.svg)](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e)
+
 ### What
 
 #### Deploy OpenShift 4.x on KVM host using a script
@@ -5,13 +14,13 @@
 ### Why
 
 #### Useful for reproducing support case scenario
-* Creating a cluster with the below customization will be hassle-free. 
+* Creating a cluster with the below customization will be hassle-free
    * Disconnected cluster
    * Connected cluster with proxy
    * Provision nodes using PXE server
    * Add RHEL nodes
 
-* The deployment completes considerably fast since we have created all the piece parts as ready-to-run scripts.
+* The deployment completes considerably fast since we have created all the piece parts as ready-to-run scripts
   * Nodes use KVM ready images and cli provisioning
   * Downloading and setting up the requiremnets are just a matter of running a script
 
@@ -25,10 +34,10 @@
 
 #### It is simple bash so tweaks can be done
 * Created the script steps with fuction in it so it is easy to remove the piece parts just by commenting it
-* It is Vagrant kind of directory structure. All the related files and configurations are placed inside its own direcotry
+* It is Vagrant kind of directory structure. All the related files and configurations are placed inside its own direcotry.
 
 #### RHCOS serial console access + BIOS in terminal
-* Serial console can be accessible from terminal - Good for network related scenarios
+* Serial console can be accessible from terminal - Good for network related scenarios.
 * Boot menu can be accessible from terminal - No need to relay on GUI console which usually opens just after the max time to hit the TAB or 'e'.
 
 ### How
@@ -42,10 +51,10 @@
    * CPU: **30**
    * DISK: **360 GB**
 
-* Example Pass-Through Host CPU configuration in RHV.
+* Example Pass-Through Host CPU configuration in RHV
 
 ![enter image description here](https://raw.githubusercontent.com/kevydotvinu/disconnectedOCPonKVM/main/.img/passThroughHostCpu.png)
-* Use RHEL 7 ISO for KVM host installation.
+* Use RHEL 7 ISO for KVM host installation
 
 #### Get script
 ```
@@ -54,12 +63,16 @@ $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && \
 ```
 
 #### Configure host
+##### Install packages
 ```
 $ subscription-manager register
 $ subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-ansible-2.9-rpms" --enable="rhel-7-server-ose-4.7-rpms"
 $ yum -y update
 $ yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
 $ yum install -y screen podman httpd-tools jq git openshift-ansible
+```
+##### Configure depended services
+```
 $ bash configureHost.sh -s all
 ```
 #### Download and prepare files
