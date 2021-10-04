@@ -66,7 +66,10 @@ $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && \
 ##### Install packages
 ```
 $ subscription-manager register
-$ subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-ansible-2.9-rpms" --enable="rhel-7-server-ose-4.7-rpms"
+$ subscription-manager repos --enable="rhel-7-server-rpms" \
+                             --enable="rhel-7-server-extras-rpms" \
+                             --enable="rhel-7-server-ansible-2.9-rpms" \
+                             --enable="rhel-7-server-ose-4.7-rpms"
 $ yum -y update
 $ yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
 $ yum install -y screen podman httpd-tools jq git openshift-ansible
@@ -198,7 +201,8 @@ $ podman images | grep must-gather
 ```
 ```
 $ cd downloads
-$ skopeo copy --authfile pull-secret.json docker://registry.redhat.io/rhel8/support-tools docker://mirror.ocp.example.local:5000/rhel8/support-tools
+$ skopeo copy --authfile pull-secret.json docker://registry.redhat.io/rhel8/support-tools \
+                                          docker://mirror.ocp.example.local:5000/rhel8/support-tools
 $ cat << EOF > image-policy-2.yaml
 apiVersion: operator.openshift.io/v1alpha1
 kind: ImageContentSourcePolicy
