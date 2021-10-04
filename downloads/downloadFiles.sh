@@ -12,16 +12,22 @@ else echo "Using OpenShift" ${RELEASE} "release ..."
 fi
 
 function GET_PATH {
-	RELEASE_CUT=$(echo ${RELEASE} | cut -d"." -f1-2)
+	RELEASE_MINOR=$(echo ${RELEASE} | cut -d"." -f1-2)
+	RELEASE_PATCH=$(echo ${RELEASE} | cut -d'.' -f3)
 	if echo ${RELEASE} | grep -qE '(^[0-9][.][0-9][.][0-9]$|^[0-9][.][0-9][.][0-9][0-9]$|^[0-9][.][0-9][0-9][.][0-9][0-9]$)'; then
-		RHCOS_EQ_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -Fe ${RELEASE} | cut -d'/' -f3-)
-		RHCOS_LE_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' -e ${RELEASE_CUT}'[.][0-9][0-9]$' | tail -n 2 | head -n 1 | cut -d'/' -f3-)
+		RHCOS_EQ_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE}'$' | cut -d'/' -f3-)
+		ARR=()
+		while read -r LINE; do
+		ARR+=( $LINE )
+		done <<< $(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_MINOR}'[.][0-9]$' -e ${RELEASE_MINOR}'[.][0-9][0-9]$' | rev | cut -d'/' -f1 | rev | tac | cut -d'.' -f3)
+		for i in ${!ARR[@]}; do
+        		if [[ "${RELEASE_PATCH}" -gt "${ARR[${i}]}" ]]; then
+			RHCOS_LE_VER=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_MINOR}.${ARR[${i}]}'$' | cut -d'/' -f3-)
+			break
+			fi
+		done
 		RHCOS=${RHCOS_EQ_VER:=$RHCOS_LE_VER}
-		if [[ "${RHCOS_EQ_VER}" != "${RHCOS_LE_VER}" ]]; then
-			RHCOS_RELEASE=${RELEASE}
-		else
-			RHCOS_RELEASE=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e dependencies/rhcos | grep -e ${RELEASE_CUT}'[.][0-9]$' -e ${RELEASE_CUT}'[.][0-9][0-9]$' | tail -n 2 | head -n 1 | rev | cut -d'/' -f1 | rev)
-		fi
+		RHCOS_RELEASE=$(echo ${RHCOS} | rev | cut -d'/' -f1 | rev)
 		[ -n "${RHCOS}" ] || { echo "RHCOS path not found"; exit 1; }
 		[ -n "${RHCOS_RELEASE}" ] || { echo "RHCOS path not found"; exit 1; }
 	else
