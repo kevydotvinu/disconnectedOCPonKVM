@@ -222,6 +222,7 @@ $ watch oc get mcp
 If we are working with nework related problem, TTY conosle login is possible with this using VM's serial console.
 ```
 $ cd cluster-files
+$ perl -e 'print crypt("bar","\$6\$SALT\$") . "\n"'
 $ cat << EOF > passwd.bu
 variant: fcos
 version: 1.3.0
