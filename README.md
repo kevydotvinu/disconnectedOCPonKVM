@@ -55,7 +55,9 @@
 * Example Pass-Through Host CPU configuration in RHV
 
 ![enter image description here](https://raw.githubusercontent.com/kevydotvinu/disconnectedOCPonKVM/main/.img/passThroughHostCpu.png)
-* Use RHEL 7 ISO for KVM host installation
+
+* RHEL 7 operating system
+  * For additional disk, make filesystem using `mkfs -t xfs -n ftype=1 /dev/<disk>` command. For overlay fs, ftype=1 is a requirement.
 
 #### Get script
 ```
