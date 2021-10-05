@@ -24,8 +24,8 @@
   * Downloading and setting up the requiremnets are just a matter of running a script.
 
 #### The Quicklab cluster and RHEV infra will not be enough for complex scenario replication
-* Using PXE server and proxy will not be easy
-* Accessing boot menu or serial console are annoying
+* Using PXE server and proxy will not be easy.
+* Accessing boot menu or serial console are annoying.
 
 #### Useful for Hackathon / Testathon
 * Save time from infra preparation.
