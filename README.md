@@ -5,6 +5,7 @@
 * OCM API Token from [here](https://console.redhat.com/openshift/token/).
 ##### Demo
 [![asciicast](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e.svg)](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e)
+> Note: Trimmed the terminal session from where it waits long.
 
 ### What
 
