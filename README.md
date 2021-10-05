@@ -1,8 +1,8 @@
 ### TL;DR
 #### A script-based deployment of OpenShift Container Platform on a restricted network
 ##### Requirements
-* RHEL 7 virtual machine with KVM and [other packages](#install-packages) installed
-* OCM API Token from [here](https://console.redhat.com/openshift/token/)
+* RHEL 7 virtual machine with KVM and [other packages](#install-packages) installed.
+* OCM API Token from [here](https://console.redhat.com/openshift/token/).
 ##### Demo
 [![asciicast](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e.svg)](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e)
 
