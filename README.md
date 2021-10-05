@@ -14,25 +14,25 @@
 
 #### Useful for reproducing support case scenario
 * Creating a cluster with the below customization will be hassle-free
-   * Disconnected cluster
-   * Connected cluster with proxy
-   * Provision nodes using PXE server
-   * Add RHEL nodes
+   * Disconnected cluster.
+   * Connected cluster with proxy.
+   * Provision nodes using PXE server.
+   * Add RHEL nodes.
 
-* The deployment completes considerably fast since we have created all the piece parts as ready-to-run scripts
-  * Nodes use KVM ready images and cli provisioning
-  * Downloading and setting up the requiremnets are just a matter of running a script
+* The deployment completes considerably fast since we have created all the piece parts as ready-to-run scripts.
+  * Nodes use KVM ready images and cli provisioning.
+  * Downloading and setting up the requiremnets are just a matter of running a script.
 
 #### The Quicklab cluster and RHEV infra will not be enough for complex scenario replication
-* Using PXE server and proxy will not be possible
+* Using PXE server and proxy will not be easy
 * Accessing boot menu or serial console are annoying
 
 #### Useful for Hackathon / Testathon
-* Save time from infra preparation
-* All work can be done without leaving the terminal
+* Save time from infra preparation.
+* All work can be done without leaving the terminal.
 
-#### It is simple bash so tweaks can be done
-* Created the script steps with fuction in it so it is easy to remove the piece parts just by commenting it
+#### It is bash script and tweaks can be done easily
+* Created the script steps with fuction in it so it is easy to remove the piece parts just by commenting it.
 * It is Vagrant kind of directory structure. All the related files and configurations are placed inside its own direcotry.
 
 #### RHCOS serial console access + BIOS in terminal
