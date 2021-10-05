@@ -76,7 +76,7 @@ $ yum -y update
 $ yum groupinstall -y virtualization-client virtualization-platform virtualization-tools
 $ yum install -y screen podman httpd-tools jq git openshift-ansible
 ```
-##### Configure depended services
+##### Configure dependent services
 ```
 $ bash configureHost.sh -s all
 ```
