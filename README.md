@@ -51,7 +51,7 @@
 |-----|-----|---------|
 | 30 | 120 GB | 300 GB |
 
-* Example Pass-Through Host CPU configuration in RHV
+* Nested virtualization - The below is the pass-through host CPU configuration in RHV environment
 
 ![enter image description here](https://raw.githubusercontent.com/kevydotvinu/disconnectedOCPonKVM/main/.img/passThroughHostCpu.png)
 
