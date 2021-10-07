@@ -74,7 +74,7 @@ $ bash deploy.sh
 $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && \
   cd disconnectOCPonKVM
 ```
-
+> Note: In the remainder of the steps, we will assume that we are in the above directory and switch to other if requried.
 #### Configure host
 ##### Install packages
 ```
