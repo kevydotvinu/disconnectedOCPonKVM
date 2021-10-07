@@ -12,7 +12,7 @@ $ sed -i 's/OCM_TOKEN=.*/OCM_TOKEN=<your-token>/' env
 $ cd cluster-files
 $ bash deploy.sh
 ```
-> Note: If anything breaks in the middle, fix the issue and re-run the `bash deploy.sh` command.
+> **Note:** If anything breaks in the middle, fix the issue and re-run the `bash deploy.sh` command.
 ##### Demo
 [![asciicast](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e.svg)](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e)
 > Note: Trimmed the terminal session from where it waits long.
