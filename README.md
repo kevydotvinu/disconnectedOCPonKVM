@@ -194,6 +194,8 @@ $ cd registry && \
 ##### Initiate upgrade
 ```
 $ source ./env
+$ cd registry
+$ oc create -f checksum-${RELEASE}.yaml
 $ TOIMAGE=$(oc adm release info ${PULLSECRET} mirror.ocp.example.local:5000/ocp4/openshift4:${RELEASE}-x86_64 | grep "Pull From" | cut -d" " -f3)
 $ oc adm upgrade --to-image=${TOIMAGE} --allow-explicit-upgrade
 ```
