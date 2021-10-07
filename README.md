@@ -194,8 +194,8 @@ $ cd registry && \
 ##### Initiate upgrade
 ```
 $ source ./env
-$ TOIMAGE=$(oc adm release info mirror.ocp.example.local/ocp4/openshift4:${RELEASE} | grep "Pull From" | cut -d" " -f3)
-$ oc adm upgrade --image-to=${TOIMAGE} --allow-explicit-upgrade
+$ TOIMAGE=$(oc adm release info ${PULLSECRET} mirror.ocp.example.local:5000/ocp4/openshift4:${RELEASE}-x86_64 | grep "Pull From" | cut -d" " -f3)
+$ oc adm upgrade --to-image=${TOIMAGE} --allow-explicit-upgrade
 ```
 #### Tips and Tricks
 ##### Enable internet for guest VMs
