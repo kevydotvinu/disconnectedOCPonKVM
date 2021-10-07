@@ -3,6 +3,16 @@
 ##### Requirements
 * RHEL 7 virtual machine with KVM and [other packages](#install-packages) installed.
 * OCM API Token from [here](https://console.redhat.com/openshift/token/).
+##### Deployment
+```
+$ git clone https://github.com/kevydotvinu/disconnectedocponkvm
+$ cd disconnectedocponkvm
+$ sed -i 's/RELEASE=.*/RELEASE=4.7.7/' env
+$ sed -i 's/OCM_TOKEN=.*/OCM_TOKEN=<your-token>/' env
+$ cd cluster-files
+$ bash deploy.sh
+```
+> Note: If anything breaks in the middle, fix the issue and re-run the `bash deploy.sh` command.
 ##### Demo
 [![asciicast](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e.svg)](https://asciinema.org/a/iFc4KIRQI8DE79i9eVhcbdl2e)
 > Note: Trimmed the terminal session from where it waits long.
@@ -83,7 +93,7 @@ $ bash configureHost.sh -s all
 ```
 #### Download and prepare files
 ```
-$ sed -i 's/RELEASE=.*/RELEASE=4.8.2/' env
+$ sed -i 's/RELEASE=.*/RELEASE=4.7.7/' env
 $ cd downloads && \
   bash downloadFiles.sh && \
   bash sshAndPullsecret.sh '<ACCESS_TOKEN>'
@@ -174,7 +184,7 @@ $ bash approve.sh
 #### Upgrade cluster
 ##### Set latest release
 ```
-$ sed -i 's/RELEASE=.*/RELEASE=4.8.4/' env
+$ sed -i 's/RELEASE=.*/RELEASE=4.7.7/' env
 ```
 ##### Mirror OpenShift image repository
 ```
