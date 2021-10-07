@@ -56,25 +56,25 @@ $ bash deploy.sh
 
 #### Prerequisites
 
-* A virtual machine with pass-through host CPU enabled. The host resources must meet:
+* A virtual machine with the below resources:
 
 | CPU | RAM | Storage |
 |-----|-----|---------|
 | 30 | 120 GB | 300 GB |
 
+> **Note:** A disk should be added with the `Allocation Policy: Preallocated`. If it is an additional disk other than the OS disk to host the complete installation files, make filesystem using `mkfs -t xfs -n ftype=1 /dev/<disk>` command because for overlay fs, `ftype=1` is a requirement.
+* RHEL 7 operating system
+> **Note:** Create additional disk of 300 GB if RHEL 7 installation uses a template.
 * Nested virtualization - The below is the pass-through host CPU configuration in RHV environment
 
 ![enter image description here](https://raw.githubusercontent.com/kevydotvinu/disconnectedOCPonKVM/main/.img/passThroughHostCpu.png)
-
-* RHEL 7 operating system
-  * For additional disk, make filesystem using `mkfs -t xfs -n ftype=1 /dev/<disk>` command. For overlay fs, `ftype=1` is a requirement.
 
 #### Get script
 ```
 $ git clone https://github.com/kevydotvinu/disconnectOCPonKVM && \
   cd disconnectOCPonKVM
 ```
-> Note: In the remainder of the steps, we will assume that we are in the above directory and switch to other if requried.
+> **Note:** In the remainder of the steps, we will assume that we are in the above directory and switch to other if requried.
 #### Configure host
 ##### Install packages
 ```
