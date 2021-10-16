@@ -1,12 +1,15 @@
 #!/bin/bash
 
-function GET_OPERATORS_LIST {
+function CLEAN_CONTAINERS {
 	echo "Removing old opm container ..."
-	podman kill $(podman ps -a | grep rh-o-index | awk '{print $1}') > /dev/null
-	podman rm -f $(podman ps -a | grep rh-o-index | awk '{print $1}') > /dev/null
+	podman kill $(podman ps -a | grep rh-o-index | awk '{print $1}') > /dev/null 2>&1
+	podman rm -f $(podman ps -a | grep rh-o-index | awk '{print $1}') > /dev/null 2>&1
 	echo "Removing old grpcurl container ..."
-	podman kill $(podman ps -a | grep grpcurl | awk '{print $1}') > /dev/null
-	podman rm -f $(podman ps -a | grep grpcurl | awk '{print $1}') > /dev/null
+	podman kill $(podman ps -a | grep grpcurl | awk '{print $1}') > /dev/null 2>&1
+	podman rm -f $(podman ps -a | grep grpcurl | awk '{print $1}') > /dev/null 2>&1
+}
+
+function GET_OPERATORS_LIST {
 	echo "Starting new opm container ..."
 	podman run --net host --name rh-o-index -d registry.redhat.io/redhat/redhat-operator-index:v${RELEASE_MINOR}
 	podman run --net host --name grpcurl fullstorydev/grpcurl:latest -plaintext localhost:50051 api.Registry/ListPackages > packages.out
@@ -67,7 +70,9 @@ function MIRROR_CATALOG {
 source $(dirname $(dirname $(pwd)))/env
 RELEASE_MINOR=$(echo ${RELEASE} | cut -d"." -f1-2)
 PULLSECRET=$(dirname $(dirname $(pwd)))/downloads/pull-secret.json
+CLEAN_CONTAINERS
 GET_OPERATORS_LIST || exit 1
 OPERATOR_SELECTION || exit 1
 CREATE_INDEX_IMAGE || exit 1
+CLEAN_CONTAINERS
 MIRROR_CATALOG || exit 1
