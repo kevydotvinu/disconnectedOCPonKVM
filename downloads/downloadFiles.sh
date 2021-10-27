@@ -35,7 +35,7 @@ function GET_PATH {
 		RHCOS_RELEASE=${RELEASE}
 		[ -n "${RHCOS}" ] || { echo "RHCOS path not found"; exit 1; }
 	fi
-	CLIENTS=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e clients/ocp | grep -Fe ${RELEASE} | cut -d'/' -f3-) || echo "Clients path not found"
+	CLIENTS=$(curl -s https://mirror.openshift.com/pub/DIRECTORY_SIZES.txt | grep -e x86_64 | grep -e clients/ocp | grep -e ${RELEASE}'$' | cut -d'/' -f3-) || echo "Clients path not found"
 	[ -n "${CLIENTS}" ] || { echo "Client binaries path not found"; exit 1; }
 }
 
