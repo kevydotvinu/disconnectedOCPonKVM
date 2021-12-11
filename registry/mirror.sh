@@ -6,7 +6,7 @@ else echo "Using OpenShift" ${RELEASE} "release ..."
 fi
 
 OCP_RELEASE=${RELEASE}
-LOCAL_REGISTRY='mirror.${CLUSTER_NAME}.${DOMAIN}:5000'
+LOCAL_REGISTRY=mirror.${CLUSTER_NAME}.${DOMAIN}:5000
 LOCAL_REPOSITORY='ocp4/openshift4'
 PRODUCT_REPO='openshift-release-dev'
 LOCAL_SECRET_JSON=$(dirname $(pwd))/downloads/pull-secret.json
