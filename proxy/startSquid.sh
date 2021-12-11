@@ -8,6 +8,8 @@ function STOP_HAPROXY {
 
 function START_HAPROXY {
 	podman run --detach \
+		--env CLUSTER_NAME=${CLUSTER_NAME} \
+		--env DOMAIN=${DOMAIN} \
 	      	--net host \
 	      	--security-opt label=disable \
 		--volume $(pwd)/conf/squid.conf:/etc/squid/squid.conf \
@@ -17,6 +19,7 @@ function START_HAPROXY {
 	      	--name squid localhost/kevydotvinu/squid
 }
 
+source $(dirname $(pwd))/env
 STOP_HAPROXY
 sleep 5s
 START_HAPROXY

@@ -52,15 +52,15 @@ function CREATE_INDEX_IMAGE {
 	podman exec -it rh-o-index opm registry prune -p $( echo ${SELECTION} | sed 's/,$//g') --database /registry/index.db && \
 	podman cp rh-o-index:/registry/index.db . && \
 	podman cp index.db rh-o-index:/database/index.db && \
-	podman commit rh-o-index mirror.ocp.example.local:5000/olm/redhat-operator-index:v${RELEASE_MINOR} && \
-	podman push --authfile ${PULLSECRET} mirror.ocp.example.local:5000/olm/redhat-operator-index:v${RELEASE_MINOR} && \
+	podman commit rh-o-index mirror.${CLUSTER_NAME}.${DOMAIN}:5000/olm/redhat-operator-index:v${RELEASE_MINOR} && \
+	podman push --authfile ${PULLSECRET} mirror.${CLUSTER_NAME}.${DOMAIN}:5000/olm/redhat-operator-index:v${RELEASE_MINOR} && \
 	set +x
 	[ $? == 0 ] || { echo "✗ The index image is not generated"; exit 1; }
 }
 
 function MIRROR_CATALOG {
 	while true; do
-	oc adm catalog mirror -a ${PULLSECRET} mirror.ocp.example.local:5000/olm/redhat-operator-index:v${RELEASE_MINOR} mirror.ocp.example.local:5000/olm --to-manifests=$(pwd)/manifests --index-filter-by-os='linux/amd64' 2>&1 | tee mirror-catalog.log
+	oc adm catalog mirror -a ${PULLSECRET} mirror.${CLUSTER_NAME}.${DOMAIN}:5000/olm/redhat-operator-index:v${RELEASE_MINOR} mirror.${CLUSTER_NAME}.${DOMAIN}:5000/olm --to-manifests=$(pwd)/manifests --index-filter-by-os='linux/amd64' 2>&1 | tee mirror-catalog.log
 	if ! grep error mirror-catalog.log; then break; fi
 	echo "✗ The Operator catalog mirroring is not completed"
 	done

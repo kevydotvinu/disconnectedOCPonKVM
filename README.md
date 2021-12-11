@@ -196,7 +196,7 @@ $ cd registry && \
 $ source ./env
 $ cd registry
 $ oc create -f checksum-${RELEASE}.yaml
-$ TOIMAGE=$(oc adm release info ${PULLSECRET} mirror.ocp.example.local:5000/ocp4/openshift4:${RELEASE}-x86_64 | grep "Pull From" | cut -d" " -f3)
+$ TOIMAGE=$(oc adm release info ${PULLSECRET} mirror.${CLUSTER_NAME}.${DOMAIN}:5000/ocp4/openshift4:${RELEASE}-x86_64 | grep "Pull From" | cut -d" " -f3)
 $ oc adm upgrade --to-image=${TOIMAGE} --allow-explicit-upgrade
 ```
 #### Tips and Tricks
@@ -218,7 +218,7 @@ $ podman images | grep must-gather
 ```
 $ cd downloads
 $ skopeo copy --authfile pull-secret.json docker://registry.redhat.io/rhel8/support-tools \
-                                          docker://mirror.ocp.example.local:5000/rhel8/support-tools
+                                          docker://mirror.${CLUSTER_NAME}.${DOMAIN}:5000/rhel8/support-tools
 $ cat << EOF > image-policy-2.yaml
 apiVersion: operator.openshift.io/v1alpha1
 kind: ImageContentSourcePolicy
@@ -227,7 +227,7 @@ metadata:
 spec:
   repositoryDigestMirrors:
   - mirrors:
-    - mirror.ocp.example.local:5000/rhel8/support-tools
+    - mirror.${CLUSTER_NAME}.${DOMAIN}:5000/rhel8/support-tools
     source: registry.redhat.io/rhel8/support-tools
 EOF
 $ oc create -f image-policy-2.yaml
@@ -262,9 +262,9 @@ $ rm -vf bootstrap.ign.1
 ##### Cluster access from output of the KVM host
 Add the below entries in the machine where the cluster does access.
 ```
-<kvm-host-ip> api.ocp.example.local
-<kvm-host-ip> oauth-openshift.apps.ocp.example.local
-<kvm-host-ip> console-openshift-console.apps.ocp.example.local
+<kvm-host-ip> api.${CLUSTER_NAME}.${DOMAIN}
+<kvm-host-ip> oauth-openshift.apps.${CLUSTER_NAME}.${DOMAIN}
+<kvm-host-ip> console-openshift-console.apps.${CLUSTER_NAME}.${DOMAIN}
 ```
 ##### Check upgrade path
 ```

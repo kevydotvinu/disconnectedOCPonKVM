@@ -53,24 +53,24 @@ function CONFIGURE_DHCP {
 	MAC_RHEL8=$MAC:91:98
 	virsh net-destroy default
 	virsh net-start default
-        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_BOOTSTRAP}' name='bootstrap.ocp.example.local' ip='192.168.122.90'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_BOOTSTRAP}' name='bootstrap.ocp.example.local' ip='192.168.122.90'/>" --live --config
-        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER0}' name='master0.ocp.example.local' ip='192.168.122.91'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER0}' name='master0.ocp.example.local' ip='192.168.122.91'/>" --live --config
-        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER1}' name='master1.ocp.example.local' ip='192.168.122.92'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER1}' name='master1.ocp.example.local' ip='192.168.122.92'/>" --live --config
-        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER2}' name='master2.ocp.example.local' ip='192.168.122.93'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER2}' name='master2.ocp.example.local' ip='192.168.122.93'/>" --live --config
-        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.ocp.example.local' ip='192.168.122.94'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.ocp.example.local' ip='192.168.122.94'/>" --live --config
-        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.ocp.example.local' ip='192.168.122.95'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.ocp.example.local' ip='192.168.122.95'/>" --live --config
-	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2a.ocp.example.local' ip='192.168.122.96'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2a.ocp.example.local' ip='192.168.122.96'/>" --live --config
-	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2b.ocp.example.local' ip='192.168.122.97'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2b.ocp.example.local' ip='192.168.122.97'/>" --live --config
-	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.ocp.example.local' ip='192.168.122.98'/>" --live --config 2> /dev/null
-        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.ocp.example.local' ip='192.168.122.98'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_BOOTSTRAP}' name='bootstrap.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.90'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_BOOTSTRAP}' name='bootstrap.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.90'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER0}' name='master0.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.91'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER0}' name='master0.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.91'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER1}' name='master1.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.92'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER1}' name='master1.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.92'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_MASTER2}' name='master2.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.93'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_MASTER2}' name='master2.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.93'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.94'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER0}' name='worker0.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.94'/>" --live --config
+        virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.95'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER1}' name='worker1.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.95'/>" --live --config
+	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2a.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.96'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2a}' name='worker2a.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.96'/>" --live --config
+	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2b.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.97'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_WORKER2b}' name='worker2b.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.97'/>" --live --config
+	virsh net-update default delete ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.98'/>" --live --config 2> /dev/null
+        virsh net-update default add-last ip-dhcp-host --xml "<host mac='${MAC_RHEL8}' name='rhel8.${CLUSTER_NAME}.${DOMAIN}' ip='192.168.122.98'/>" --live --config
 	virsh net-destroy default
 	virsh net-start default
 	systemctl restart libvirtd

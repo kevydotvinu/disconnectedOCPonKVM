@@ -15,9 +15,9 @@ function RUN_REGISTRY {
 		   -e REGISTRY_HTTP_TLS_KEY=/certs/server-key.pem \
 		   docker.io/library/registry:2
 	cat ${DIR}/certs/ca.pem ${DIR}/certs/server.pem > /etc/pki/ca-trust/source/anchors/registry.crt; update-ca-trust extract
-	mkdir -p /etc/docker/certs.d/mirror.ocp.example.local\:5000; cp ${DIR}/certs/server.pem /etc/docker/certs.d/mirror.ocp.example.local\:5000/ca.crt
-	sleep 5s; curl -k -u openshift:redhat https://mirror.ocp.example.local:5000/v2/_catalog
-	podman login --authfile ${DIR}/auth/auth.json -u openshift -p redhat mirror.ocp.example.local:5000
+	mkdir -p /etc/docker/certs.d/mirror.${CLUSTER_NAME}.${DOMAIN}\:5000; cp ${DIR}/certs/server.pem /etc/docker/certs.d/mirror.${CLUSTER_NAME}.${DOMAIN}\:5000/ca.crt
+	sleep 5s; curl -k -u openshift:redhat https://mirror.${CLUSTER_NAME}.${DOMAIN}:5000/v2/_catalog
+	podman login --authfile ${DIR}/auth/auth.json -u openshift -p redhat mirror.${CLUSTER_NAME}.${DOMAIN}:5000
 	jq -c --argjson var "$(jq .auths ${DIR}/auth/auth.json)" '.auths += $var' $(dirname $(pwd))/downloads/pull-secret > $(dirname $(pwd))/downloads/pull-secret.json
 }
 

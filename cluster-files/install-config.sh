@@ -116,8 +116,8 @@ fips: false
 pullSecret: '${PULLSECRET}' 
 sshKey: '${SSHKEY}'
 proxy:
-  httpProxy: http://proxy.ocp.example.local:4128 
-  httpsProxy: http://proxy.ocp.example.local:4128 
+  httpProxy: http://proxy.${CLUSTER_NAME}.${DOMAIN}:4128 
+  httpsProxy: http://proxy.${CLUSTER_NAME}.${DOMAIN}:4128 
   noProxy: example.local,192.168.122.0/24 
 additionalTrustBundle: |
 $(cat $(dirname $(pwd))/proxy/cert/CA.pem | sed 's/^/    /')
