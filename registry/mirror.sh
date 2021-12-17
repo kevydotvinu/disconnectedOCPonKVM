@@ -6,14 +6,15 @@ else echo "Using OpenShift" ${RELEASE} "release ..."
 fi
 
 OCP_RELEASE=${RELEASE}
-LOCAL_REGISTRY='mirror.${CLUSTER_NAME}.${DOMAIN}:5000'
+LOCAL_REGISTRY=mirror.${CLUSTER_NAME}.${DOMAIN}:5000
 LOCAL_REPOSITORY='ocp4/openshift4'
+LOCAL_RELEASE_IMAGES_REPOSITORY='ocp4/openshift4-release-images'
 PRODUCT_REPO='openshift-release-dev'
 LOCAL_SECRET_JSON=$(dirname $(pwd))/downloads/pull-secret.json
 RELEASE_NAME='ocp-release'
 ARCHITECTURE='x86_64'
-oc adm release mirror -a ${LOCAL_SECRET_JSON} --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE} --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE} --dry-run > dry-run.txt || ( echo ✗ Dry-run Failed )
-oc adm release mirror -a ${LOCAL_SECRET_JSON} --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE} --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE} || ( echo ✗ Mirroring Failed )
+oc adm release mirror -a ${LOCAL_SECRET_JSON} --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE} --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} --to-release-image=${LOCAL_REGISTRY}/${LOCAL_RELEASE_IMAGES_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE} --dry-run > dry-run.txt || ( echo ✗ Dry-run Failed )
+oc adm release mirror -a ${LOCAL_SECRET_JSON} --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE} --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} --to-release-image=${LOCAL_REGISTRY}/${LOCAL_RELEASE_IMAGES_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE} || ( echo ✗ Mirroring Failed )
 
 OCP_RELEASE_NUMBER=${RELEASE}
 DIGEST="$(oc adm release info quay.io/openshift-release-dev/ocp-release:${OCP_RELEASE_NUMBER}-${ARCHITECTURE} | sed -n 's/Pull From: .*@//p')"
