@@ -77,6 +77,7 @@ function CONFIGURE_ROUTE {
 	oc patch route --type=merge --patch='{"spec":{"tls":{"insecureEdgeTerminationPolicy":"Allow"}}}' update-service-policy-engine-route -n openshift-update-service
 }
 
+source $(dirname $(dirname $(pwd)))/env
 KUBECONFIG=$(dirname $(dirname $(pwd)))/cluster-files/auth/kubeconfig
 ROOT_DIR=$(dirname $(dirname $(pwd)))
 CONFIGURE_IMAGE_REGISTRY

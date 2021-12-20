@@ -70,6 +70,7 @@ function MIRROR_CATALOG {
 source $(dirname $(dirname $(pwd)))/env
 RELEASE_MINOR=$(echo ${RELEASE} | cut -d"." -f1-2)
 PULLSECRET=$(dirname $(dirname $(pwd)))/downloads/pull-secret.json
+PATH=$PATH:/data/disconnectedocponkvm/downloads
 CLEAN_CONTAINERS
 GET_OPERATORS_LIST || exit 1
 OPERATOR_SELECTION || exit 1

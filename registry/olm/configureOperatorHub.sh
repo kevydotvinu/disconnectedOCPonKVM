@@ -9,7 +9,7 @@ function PAUSE_UNPAUSE_MCP {
 }
 
 function CREATE_OPERATOR_SOURCE {
-	oc create -f manifests/
+	oc apply -f manifests/
 }
 
 function WAIT_MCP {
@@ -18,6 +18,7 @@ function WAIT_MCP {
 
 source $(dirname $(dirname $(pwd)))/env
 KUBECONFIG=$(dirname $(dirname $(pwd)))/cluster-files/auth/kubeconfig
+PATH=$PATH:/data/disconnectedocponkvm/downloads
 PATCH_OH
 PAUSE_UNPAUSE_MCP true master
 PAUSE_UNPAUSE_MCP true worker
